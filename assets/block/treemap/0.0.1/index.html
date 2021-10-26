@@ -1,0 +1,361 @@
+<div><div plug="layout"><div class="pdl-layout"><div data-type="layout"><div class="pdl-cell" data-name="view"></div><div class="pdl-cell" data-name="unit"></div><div class="pdl-cell" data-name="legend"></div></div><div data-type="render"></div></div></div><style type="text/css">.pdl-layout > div[data-type=layout] {
+  display: grid;
+  grid-template-columns: 1fr fit-content(10em);
+  grid-template-rows: 1fr fit-content(1em);
+}
+.pdl-layout > div[data-type=layout] > .pdl-cell[data-name=view] {
+  grid-area: 1/1;
+}
+.pdl-layout > div[data-type=layout] > .pdl-cell[data-name=legend] {
+  grid-column: 2;
+  grid-row: 1/span 2;
+  padding: 0 0.5em 0 0.5em;
+}
+.pdl-layout > div[data-type=layout] > .pdl-cell[data-name=unit] {
+  grid-column: 1;
+  grid-row: 2;
+  line-height: 1em;
+  text-align: right;
+  padding: 0.25em 0;
+}
+.pdl-layout.legend-bottom > div[data-type=layout] {
+  grid-template-columns: 1fr fit-content(1em);
+  grid-template-rows: 1fr fit-content(3em);
+}
+.pdl-layout.legend-bottom > div[data-type=layout] .pdl-cell[data-name=view] {
+  grid-column: 1/span 2;
+  grid-row: 1;
+}
+.pdl-layout.legend-bottom > div[data-type=layout] .pdl-cell[data-name=legend] {
+  padding-top: 1em;
+  grid-column: 1;
+  grid-row: 2;
+}
+.pdl-layout.legend-bottom > div[data-type=layout] .pdl-cell[data-name=unit] {
+  padding-top: 1em;
+  grid-column: 2;
+  grid-row: 2;
+}
+</style><script type="@plotdb/block">(function(it){
+  return it();
+})(function(){
+  var blockFactory, mod;
+  blockFactory = {
+    pkg: {
+      name: 'treemap',
+      version: '0.0.1',
+      extend: {
+        name: "base",
+        version: "0.0.1"
+      },
+      dependencies: [],
+      i18n: {
+        "zh-TW": {
+          "other": "其它",
+          "unit": "單位"
+        }
+      }
+    },
+    init: function(arg$){
+      var root, context, pubsub, t;
+      root = arg$.root, context = arg$.context, pubsub = arg$.pubsub, t = arg$.t;
+      return pubsub.fire('init', {
+        mod: mod({
+          root: root,
+          context: context,
+          t: t
+        })
+      });
+    }
+  };
+  mod = function(arg$){
+    var root, context, t, chart, d3, ldcolor, wrapSvgText;
+    root = arg$.root, context = arg$.context, t = arg$.t;
+    chart = context.chart, d3 = context.d3, ldcolor = context.ldcolor, wrapSvgText = context.wrapSvgText;
+    return {
+      sample: function(){
+        return {
+          raw: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50].map(function(val){
+            return {
+              val: Math.random().toFixed(2),
+              cat: Math.floor(1 + 6 * Math.random())
+            };
+          }),
+          binding: {
+            color: {
+              key: 'cat'
+            },
+            area: {
+              key: 'val',
+              unit: 'MB'
+            },
+            name: {
+              key: 'cat'
+            },
+            category: {
+              key: 'cat'
+            }
+          }
+        };
+      },
+      meta: {},
+      config: {
+        unitPosition: {
+          type: 'choice',
+          values: ['inner', 'outside', 'none']
+        }
+      },
+      dimension: {
+        color: {
+          type: 'RC',
+          name: "顏色",
+          priority: 4
+        },
+        area: {
+          type: 'R',
+          name: "面積",
+          priority: 1
+        },
+        name: {
+          type: 'NC',
+          name: "名稱",
+          priority: 2
+        },
+        category: {
+          type: 'C',
+          name: "分類",
+          priority: 3
+        }
+      },
+      init: function(){
+        var tint, textRenderer, ref$, this$ = this;
+        this.tint = tint = new chart.utils.tint();
+        this.g = Object.fromEntries(['view', 'unit', 'legend'].map(function(it){
+          return [it, d3.select(this$.layout.getGroup(it))];
+        }));
+        this.textRenderer = textRenderer = document.createElement('div');
+        import$(textRenderer.style, {
+          textAlign: 'right',
+          fontSize: '0.9em',
+          padding: ".5em .5em",
+          lineHeight: '1.1em',
+          whiteSpace: "pre-line",
+          display: 'inline-block',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          opacity: 0,
+          pointerEvents: 'none',
+          userSelect: 'none',
+          zIndex: 0
+        });
+        root.appendChild(textRenderer);
+        this.legend = new chart.utils.legend({
+          layout: this.layout,
+          name: 'legend',
+          root: this.root,
+          shape: function(d){
+            return d3.select(this).attr('fill', tint.get(d.key));
+          },
+          direction: ((ref$ = this.cfg).legend || (ref$.legend = {})).position === 'bottom' ? 'horizontal' : 'vertical',
+          cfg: {
+            selectable: true
+          }
+        });
+        this.legend.on('select', function(){
+          this$.bind();
+          this$.resize();
+          return this$.render();
+        });
+        return this.tip = new chart.utils.tip({
+          root: this.root,
+          accessor: function(arg$){
+            var evt, data, v;
+            evt = arg$.evt;
+            if (!(evt.target && (data = d3.select(evt.target).datum()))) {
+              return null;
+            }
+            v = isNaN(data.data.area)
+              ? '-'
+              : data.data.area.toFixed(2) + "" + (this$.binding.area.unit || '');
+            return {
+              name: data.data.name,
+              value: v
+            };
+          },
+          range: function(){
+            return this$.layout.getNode('view').getBoundingClientRect();
+          }
+        });
+      },
+      destroy: function(){
+        return this.tip.destroy();
+      },
+      parse: function(){
+        var hash, k, v;
+        this.tint.reset();
+        hash = {};
+        this.data.map(function(d, i){
+          d.id = "name-" + i;
+          if (!d.category || d.category === "") {
+            return d.category = t("other");
+          }
+        });
+        if (!this.binding.category) {
+          this.data.map(function(d){
+            return d.category = 'root-1';
+          });
+        }
+        this.data.map(function(it){
+          return hash[it.category] = {
+            id: it.category,
+            category: 'root'
+          };
+        });
+        this.cats = Array.from(new Set(this.data.map(function(it){
+          return it.category;
+        }))).filter(function(it){
+          return it !== 'root-1';
+        });
+        this.data = this.data.concat((function(){
+          var ref$, results$ = [];
+          for (k in ref$ = hash) {
+            v = ref$[k];
+            results$.push(v);
+          }
+          return results$;
+        }()), [{
+          id: 'root'
+        }]);
+        return this.legend.data(this.cats.map(function(it){
+          return {
+            key: it,
+            text: it
+          };
+        }));
+      },
+      bind: function(){
+        var data, s, this$ = this;
+        data = this.data.filter(function(it){
+          var ref$;
+          return it.id === 'root' || ((ref$ = it.category) === 'root' || ref$ === 'root-1') || this$.legend.isSelected(it.category);
+        });
+        s = d3.stratify().id(function(it){
+          return it.id;
+        }).parentId(function(it){
+          return it.category;
+        });
+        return this.ret = s(data);
+      },
+      resize: function(){
+        var ref$, ref1$, x$, box, tree;
+        this.root.querySelector('.pdl-layout').classList.toggle('legend-bottom', ((ref$ = this.cfg).legend || (ref$.legend = {})).position === 'bottom');
+        this.tip.toggle(((ref$ = this.cfg).tip || (ref$.tip = {})).enabled != null ? this.cfg.tip.enabled : true);
+        this.unit = {
+          inner: ((ref$ = this.cfg).unit || (ref$.unit = {})).position === 'inner' ? this.binding.area.unit || '' : '',
+          outer: (ref$ = ((ref1$ = this.cfg).unit || (ref1$.unit = {})).position) === 'inner' || ref$ === 'none'
+            ? ''
+            : this.binding.area.unit ? t('unit') + ": " + (this.binding.area.unit || '') : ''
+        };
+        x$ = this.layout.getNode('unit');
+        x$.style.display = !this.unit.outer ? 'none' : '';
+        x$.textContent = this.unit.outer;
+        this.legend.config(this.cfg.legend);
+        this.legend.update();
+        this.layout.update(false);
+        this.ret.sum(function(it){
+          return it.area;
+        });
+        box = this.layout.getBox('view');
+        tree = d3.treemap().padding(1).size([box.width, box.height])(this.ret);
+        this.nodes = this.ret.leaves().filter(function(it){
+          return it.data._raw;
+        });
+        this.nodes.map(function(it){
+          return it._raw = it.data._raw;
+        });
+        return this.extent = d3.extent(this.nodes.map(function(it){
+          return it.value;
+        }));
+      },
+      render: function(){
+        var cfg, unit, binding, layout, textRenderer, tint, x$, y$, this$ = this;
+        cfg = this.cfg, unit = this.unit, binding = this.binding, layout = this.layout, textRenderer = this.textRenderer, tint = this.tint;
+        tint.set(cfg.pal);
+        this.g.unit.call(function(){
+          var node, ret;
+          node = layout.getNode('unit');
+          ret = wrapSvgText({
+            node: node,
+            useRange: true
+          });
+          this$.g.unit.node().textContent = '';
+          return this$.g.unit.node().appendChild(ret);
+        });
+        x$ = this.g.view.selectAll('rect.data').data(this.nodes, function(it){
+          return it._raw._idx;
+        });
+        x$.exit().remove();
+        x$.enter().append('rect').attr('class', 'data').attr('x', function(it){
+          return (it.x1 + it.x0) / 2 - (it.x1 - it.x0) / 4;
+        }).attr('y', function(it){
+          return (it.y1 + it.y0) / 2 - (it.y1 - it.y0) / 4;
+        }).attr('width', function(it){
+          return (it.x1 - it.x0) / 2;
+        }).attr('height', function(it){
+          return (it.y1 - it.y0) / 2;
+        }).attr('fill', function(it){
+          return tint.get(it.data.color || it.data.category);
+        }).style('opacity', 0);
+        this.g.view.selectAll('rect').transition().duration(350).attr('x', function(it){
+          return it.x0;
+        }).attr('y', function(it){
+          return it.y0;
+        }).attr('width', function(it){
+          return it.x1 - it.x0;
+        }).attr('height', function(it){
+          return it.y1 - it.y0;
+        }).attr('fill', function(it){
+          var v;
+          v = (it.value - this$.extent[0]) / (this$.extent[1] - this$.extent[0]) - 0.5;
+          return tint.get(it.data.color || it.data.category);
+        }).style('opacity', 1);
+        y$ = this.g.view.selectAll('g.label').data(this.nodes, function(it){
+          return it._raw._idx;
+        });
+        y$.exit().remove();
+        y$.enter().append('g').attr('class', 'label data').attr('transform', function(d, i){
+          return "translate(" + d.x0 + "," + d.y0 + ")";
+        }).attr('opacity', 0).style('pointer-events', 'none').style('cursor', 'pointer');
+        this.g.view.selectAll('g.label').attr('font-size', '0.9em').each(function(d, i){
+          var area, ret;
+          textRenderer.style.width = (d.x1 - d.x0) + "px";
+          area = d.data.area;
+          area = d3.format('.3s')(area);
+          textRenderer.innerHTML = "<div>" + (d.data.name || '') + "</div>\n<div>" + area + unit.inner + "</div>";
+          ret = wrapSvgText({
+            node: textRenderer,
+            useRange: true
+          });
+          this.textContent = '';
+          return this.appendChild(ret);
+        }).transition().duration(350).attr('transform', function(d, i){
+          return "translate(" + d.x0 + "," + d.y0 + ")";
+        }).attr('fill', function(it){
+          return tint.text(it.data.color || it.data.category);
+        }).attr('opacity', function(d, i){
+          var box;
+          box = this.getBBox();
+          return box.width > d.x1 - d.x0 || box.height > d.y1 - d.y0 ? 0 : 1;
+        });
+        return this.legend.render();
+      }
+    };
+  };
+  return blockFactory;
+});
+function import$(obj, src){
+  var own = {}.hasOwnProperty;
+  for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+  return obj;
+}</script></div>

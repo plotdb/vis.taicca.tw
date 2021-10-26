@@ -1,0 +1,2011 @@
+<!DOCTYPE html><html><head><meta http-equiv="Content-type" content="text/html;charset=UTF-8"><base href=".."><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1"><link rel="stylesheet" type="text/css" href="assets/lib/bootstrap/main/css/bootstrap.min.css?v=bceabf5"><link rel="stylesheet" type="text/css" href="assets/lib/@loadingio/bootstrap.ext/main/index.min.css?v=bceabf5"><link rel="stylesheet" type="text/css" href="assets/lib/ldiconfont/main/ldif.css?v=bceabf5"><link rel="stylesheet" type="text/css" href="assets/lib/ldslider/main/ldrs.min.css?v=bceabf5"><link rel="stylesheet" type="text/css" href="assets/lib/ldcover/main/ldcv.min.css?v=bceabf5"><link rel="stylesheet" type="text/css" href="assets/lib/ldloader/main/ldld.min.css?v=bceabf5"><link rel="stylesheet" type="text/css" href="assets/lib/ldbutton/main/ldbtn.min.css?v=bceabf5"><link rel="stylesheet" type="text/css" href="assets/lib/ldpalettepicker/main/index.min.css?v=bceabf5"><link rel="stylesheet" type="text/css" href="assets/lib/@loadingio/loading.css/main/loading.min.css?v=bceabf5"><link rel="stylesheet" type="text/css" href="assets/lib/@loadingio/transition.css/main/transition.min.css?v=bceabf5"><link rel="stylesheet" type="text/css" href="assets/lib/@loadingio/ldcolorpicker/main/ldcp.min.css?v=bceabf5"><link rel="stylesheet" type="text/css" href="assets/lib/@plotdb/sheet/main/index.min.css?v=bceabf5"><link rel="stylesheet" type="text/css" href="assets/lib/clusterize.js/main/clusterize.css?v=bceabf5"><link rel="stylesheet" type="text/css" href="css/panel.css?v=bceabf5"><link rel="stylesheet" type="text/css" href="css/index.css?v=bceabf5"><link rel="stylesheet" type="text/css" href="assets/lib/@plotdb/chart/main/chart.min.css?v=bceabf5"><title>主題產業數據儀表板</title><style type="text/css">body {
+  overflow: hidden;
+}
+.header {
+  display: flex;
+  align-items: center;
+}
+@media (max-width: 1024px) {
+  .header .unclickable {
+    display: none;
+  }
+}
+@media (max-width: 800px) {
+  .header {
+    flex-direction: column;
+    text-align: center;
+  }
+  .header > div {
+    margin-bottom: 0.5em;
+  }
+}
+.dashboard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  display: grid;
+  padding: 1em;
+  gap: 1em;
+  width: 100%;
+  height: 100%;
+  perspective: 1000px;
+}
+.pnl.widget {
+  padding-top: 0.5em;
+  opacity: 1;
+  transform: rotate3d(0, 1, 0, 0deg);
+  transition: transform 0.35s ease-in-out, opacity 0.35s ease-in-out;
+  z-index: 1;
+  position: relative;
+}
+.pnl.widget.highlight {
+  color: #f5faff;
+}
+.pnl.widget.highlight.color {
+  text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+}
+.pnl.widget.highlight.color-film {
+  background: #b53d27;
+}
+.pnl.widget.highlight.color-revenue {
+  background: #dfa921;
+}
+.pnl.widget.highlight.color-ticket {
+  background: #31df46;
+}
+.pnl.inactive {
+  z-index: 0;
+  opacity: 0;
+}
+.dashboard.hide {
+  z-index: 1;
+  pointer-events: none;
+}
+.dashboard.hide .pnl.widget {
+  transform: rotate3d(0, 1, 0, 360deg);
+  opacity: 0;
+}
+.dashboard.hide[data-name=tw] .pnl.widget {
+  transform: rotate3d(0, 1, 0, -360deg);
+}
+.rank-list-item {
+  border: 1px solid transparent;
+  border-radius: 0.25em;
+  margin: 0 0 0.5em;
+  transition: all 0.15s ease-in-out;
+}
+.rank-list-item:hover {
+  margin: -0.25em 0 0.75em;
+  box-shadow: 0 3px 3px 1px rgba(0,0,0,0.2);
+}
+.hint {
+  display: inline-block;
+  font-size: 12px;
+  color: #fff;
+}
+[data-name=title] {
+  grid-column: 1/-1;
+  grid-row: 1;
+}
+@media (max-width: 1200px) {
+  body {
+    font-size: 12px;
+  }
+}
+@media (max-width: 1024px) {
+  body {
+    overflow: scroll;
+  }
+  .dashboard {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto;
+  }
+  .dashboard .pnl {
+    grid-area: auto !important;
+    height: 75vw;
+  }
+}
+</style></head><body><div class="ldcv scroll text-dark" ld="ldcv" data-name="rank"><div class="base w-1024"><div class="inner card"><div class="card-body"><h3>電影票房總排名</h3><p>指定時間範圍內，國內外電影依總票房排名結果</p><hr><div class="mb-2 d-flex align-items-center justify-content-start"><div class="px-2 py-1 mr-2 text-right rounded" style="width:3em">排名</div><div class="px-2 py-1 mr-2 text-center rounded" style="width:6em">國別</div><div class="px-2 py-1 mr-2 text-center" style="width:8em">總票房 <small>(新臺幣)</small></div><div class="px-2 py-1 flex-grow-1">片名</div></div><div class="d-flex align-items-center justify-content-start rank-list-item py-1 px-1" ld-each="rank"><div class="px-2 py-1 mr-2 text-right bg-white" ld="rank" style="width:3em"></div><div class="px-2 py-1 text-white mr-2 text-center rounded" ld="country" style="width:6em"></div><div class="px-2 py-1 mr-2 text-right bg-light" style="width:8em"><span ld="revenue"></span><span>元</span></div><div class="px-2 py-1 bg-light flex-grow-1" ld="name"></div></div></div></div></div></div><div class="ldcv scroll" ld="ldcv" data-name="detail"><div class="base w-1024" style="height:80%;min-height:90%;"><div class="inner card"><div class="card-body p-0"><div class="p-2 d-flex"><div class="flex-grow-1"><input class="form-control form-control-sm" ld="detail-search" placeholder="關鍵字搜尋 ..."></div><div class="ml-2"><div class="btn btn-sm btn-outline-secondary d-flex align-items-center" data-ldcv-set="">關閉表格 <i class="i-close"></i></div></div></div><div ld="detail"></div></div></div></div></div><div class="w-100 h-100 ld ld-over-inverse running" ld="loader"><div class="ld" style="width:100%;height:100%;top:0;left:0;"><img style="left:0;right:0;margin:-2.5em auto 0;width:5em;height:5em;" src="/assets/img/loader.svg"><div style="width:max-content;left:0;right:0;margin:2.5em auto 0;text-align:center;"><div class="text-sm">程式載入中<br>請稍候 ...</div></div></div><div class="h-100 d-flex flex-column"><div style="padding:1em 1em 0"><div class="pnl" data-name="title"><div class="header"><div><div class="text-hl">主題產業數據儀表板</div><div class="text-sm">文化內容策進院．策略研究處</div></div><div class="text-lg text-hl mx-4">每週電影票房資訊</div><div class="mr-4 unclickable has-tips"><span>出版產業</span><div class="hover-tip tip-sm">upcoming</div></div><div class="mr-4 unclickable has-tips"><span>流行音樂產業</span><div class="hover-tip tip-sm">upcoming</div></div><div class="mr-4 unclickable has-tips"><span>OTT</span><div class="hover-tip tip-sm">upcoming</div></div><div class="flex-grow-1"></div><div class="btn btn-light mr-2 text-nowrap" ld="show-rank">整體排名</div><div class="btn btn-light mr-2 text-nowrap" ld="show-detail">表格檢視</div><div class="dropdown"><div class="btn btn-light dropdown-toggle d-flex align-items-center" data-toggle="dropdown"><div>時段：</div><div class="mx-2" style="line-height:1em;white-space:pre" ld="date-range">近半年</div></div><div class="dropdown-menu dropdown-menu-right shadow-sm"><div class="dropdown-item" ld="date-preset" data-name="all">全部時段</div><div class="dropdown-item" ld="date-preset" data-name="1m">最近一個月</div><div class="dropdown-item" ld="date-preset" data-name="6m">最近半年</div><div class="dropdown-divider"></div><div class="dropdown-header">時段起點</div><div class="dropdown-item"><select class="form-control" ld="date-picker" data-type="start" style="width:9em"><option ld-each="date"></option></select></div><div class="dropdown-header">時段終點</div><div class="dropdown-item"><select class="form-control" ld="date-picker" data-type="end" style="width:9em"><option ld-each="date"></option></select></div></div></div><div class="dropdown"><div class="btn btn-light dropdown-toggle d-flex align-items-center ml-2" data-toggle="dropdown">下載</div><div class="dropdown-menu dropdown-menu-right"><div class="dropdown-header">原始資料</div><div class="dropdown-item" ld="download" data-name="all">全時段</div><div class="dropdown-item" ld="download" data-name="part">選定時段</div><div class="dropdown-divider"></div><div class="dropdown-header">篩選後之資料</div><div class="dropdown-item" ld="download" data-name="part-filter-tw">僅國片</div><div class="dropdown-item" ld="download" data-name="part-filter">國片及外片</div><div class="dropdown-header">註: 篩選資料中, 各部電影僅保留最終一筆數據</div></div></div></div></div></div><div class="position-relative" style="flex:1 0 500px"><div class="dashboard hide" ld="dashboard" data-name="tw"><div class="pnl widget d-flex flex-column align-items-center justify-content-center clickable trigger" ld="switch" data-target="all"><div>點擊此處了解</div><div class="text-lg font-weight-bold">外片+國片銷售狀況 <i class="i-chevron-right"></i></div></div><div class="pnl widget" ld-each="panel" data-name="tw"><div class="d-flex"><div class="title mb-0 flex-grow-1" ld="title"></div><div class="clickable" ld="toggle"></div></div><div class="chart" ld="chart"></div></div></div><div class="dashboard hide" ld="dashboard" data-name="all"><div class="pnl widget d-flex flex-column align-items-center justify-content-center clickable trigger" ld="switch" data-target="tw"><div>點擊此處了解</div><div class="text-lg font-weight-bold">台灣電影銷售狀況 <i class="i-chevron-right"></i></div></div><div class="pnl widget" ld-each="panel" data-name="all"><div class="title mb-0" ld="title"></div><div class="chart" ld="chart"></div></div></div></div></div><div class="position-fixed" style="right:1em;bottom:1em;font-size:12px;padding:.25em .5em;background:#222;color:#ccc;z-index:10;border-radius:3px;box-shadow:0 2px 4px rgba(0,0,0,.3)"><span>資料來源: <a href="https://www.tfi.org.tw/BoxOfficeBulletin/weekly" target="_blank" rel="noopener noreferrer">國影中心</a></span></div></div><script>if(/MSIE|Trident/.exec(navigator.userAgent)) { window.location.href = "/err/ie/" };</script><script type="text/javascript" src="https://polyfill.io/v3/polyfill.min.js?features=ResizeObserver"></script><script type="text/javascript" src="/assets/lib/i18next/main/umd/i18next.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/@loadingio/ldquery/main/ldq.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/ldview/main/index.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/@loadingio/debounce.js/main/debounce.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/bootstrap.native/main/bootstrap-native-v4.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/papaparse/main/papaparse.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/csv4xls/main/csv4xls.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/proxise/main/proxise.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/@plotdb/csscope/main/csscope.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/@plotdb/rescope/main/rescope.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/@plotdb/block/main/block.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/@plotdb/konfig/main/konfig.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/@plotdb/konfig/main/konfig.widget.bootstrap.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/ldcolor/main/ldcolor.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/ldcover/main/ldcv.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/ldloader/main/ldld.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/ldslider/main/ldrs.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/@loadingio/ldcolorpicker/main/ldcp.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/ldpalettepicker/main/index.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/ldpalettepicker/main/all.palettes.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/@plotdb/sheet/main/index.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/ldfile/main/index.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/smiltool/main/smiltool.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/jszip/main/jszip.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/clusterize.js/main/clusterize.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/@plotdb/datum/main/index.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/@plotdb/chart/main/chart.min.js?v=bceabf5"></script><script type="text/javascript" src="assets/lib/@plotdb/chart/main/utils/tint.min.js?v=bceabf5"></script><script type="text/javascript" src="https://d3js.org/d3.v4.js"></script><script type="text/javascript" src="https://d3js.org/d3-array.v2.min.js"></script><script type="text/javascript" src="/assets/lib/proxise/main/proxise.js?v=bceabf5"></script><script type="text/javascript" src="/assets/lib/@loadingio/debounce.js/main/debounce.min.js?v=bceabf5"></script><script type="text/javascript" src="/assets/lib/@plotdb/csscope/main/csscope.js?v=bceabf5"></script><script type="text/javascript" src="/assets/lib/@plotdb/rescope/main/rescope.js?v=bceabf5"></script><script type="text/javascript" src="/assets/lib/@plotdb/block/main/block.js?v=bceabf5"></script><script type="text/javascript" src="/assets/lib/ldpalettepicker/main/index.min.js?v=bceabf5"></script><script type="text/javascript" src="/assets/lib/ldpalettepicker/main/all.palettes.js?v=bceabf5"></script><script>var dashboard, pal;
+dashboard = {
+  layout: {}
+};
+pal = {
+  colors: ['#d55741', '#e8c05c', '#6ee97d', '#7fb2eb', '#577aeb', '#b376ee']
+};
+(function(it){
+  return it.apply(dashboard);
+})(function(){
+  var dates, fillDate, this$ = this;
+  this.pal = pal;
+  this.inited = false;
+  this.loading = false;
+  this.subdata = {};
+  this.ldcv = {};
+  this.chart = {};
+  this.filters = {};
+  this.mode = 'tw';
+  this.dates = dates = {
+    picked: {},
+    list: []
+  };
+  fillDate = function(dates){
+    var len, i;
+    dates == null && (dates = []);
+    dates = dates.map(function(it){
+      return new Date(it).getTime();
+    });
+    dates.sort(function(a, b){
+      if (a < b) {
+        return -1;
+      } else if (a > b) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+    len = dates.length;
+    i = 1;
+    while (i < len) {
+      if (dates[i] - dates[i - 1] > 86400 * 8 * 1000) {
+        dates.splice(i, 0, dates[i - 1] + 86400 * 7 * 1000);
+        continue;
+      } else {
+        i++;
+      }
+    }
+    dates = dates.map(function(d, i){
+      var y, m;
+      d = new Date(d);
+      y = d.getYear() + 1900;
+      m = ((d.getMonth() + 1) + "").padStart(2, "0");
+      d = (d.getDate() + "").padStart(2, "0");
+      return y + "/" + m + "/" + d;
+    });
+    return dates;
+  };
+  import$(this, {
+    init: function(){
+      var regs, scope, this$ = this;
+      regs = {
+        block: function(arg$){
+          var name, version;
+          name = arg$.name, version = arg$.version;
+          return "/assets/block/" + name + "/" + version + "/index.html";
+        },
+        module: function(arg$){
+          var name, version, path;
+          name = arg$.name, version = arg$.version, path = arg$.path;
+          if (!/^d3/.exec(name)) {
+            return "/assets/lib/" + name + "/" + version + "/" + path;
+          }
+          return "/assets/custom-lib/d3/" + name + ".v" + version + ".min.js";
+        }
+      };
+      scope = new rescope({
+        prejs: ['https://polyfill.io/v3/polyfill.min.js?features=ResizeObserver'],
+        registry: regs.module
+      });
+      return scope.init().then(function(){
+        this$.mgr = new block.manager({
+          registry: regs.block,
+          moduleRegistry: regs.module,
+          rescope: scope
+        });
+        return i18next.init({
+          supportedLng: ['en', 'zh-TW'],
+          fallbackLng: 'zh-TW'
+        });
+      }).then(function(){
+        return block.i18n.use(i18next);
+      }).then(function(){
+        return this$.mgr.init();
+      }).then(function(){
+        return this$.view = new ldview({
+          root: document.body,
+          initRender: false,
+          action: {
+            click: {
+              "date-preset": function(arg$){
+                var node, name, ref$, ref1$, timestamp;
+                node = arg$.node;
+                name = node.getAttribute('data-name');
+                switch (name) {
+                case 'all':
+                  ref$ = this$.dates.picked;
+                  ref$.start = this$.dates.list[0];
+                  ref$.end = (ref1$ = this$.dates.list)[ref1$.length - 1];
+                  break;
+                case '1m':
+                  timestamp = Date.now() - 86400000 * 31;
+                  this$.dates.picked.start = this$.dates.list.filter(function(it){
+                    return new Date(it).getTime() >= timestamp;
+                  })[0] || (ref$ = this$.dates.list)[ref$.length - 1];
+                  this$.dates.picked.end = (ref$ = this$.dates.list)[ref$.length - 1];
+                  break;
+                case '6m':
+                  timestamp = Date.now() - 86400000 * 182;
+                  this$.dates.picked.start = this$.dates.list.filter(function(it){
+                    return new Date(it).getTime() >= timestamp;
+                  })[0] || (ref$ = this$.dates.list)[ref$.length - 1];
+                  this$.dates.picked.end = (ref$ = this$.dates.list)[ref$.length - 1];
+                }
+                this$.view.render('date-picker', 'date-range');
+                return this$.filter();
+              },
+              download: function(arg$){
+                var node, type, ps, pe, ref$, head, body, data;
+                node = arg$.node;
+                type = node.getAttribute('data-name');
+                ps = dates.picked.start || dates.list[0];
+                pe = dates.picked.end || (ref$ = dates.list)[ref$.length - 1];
+                head = this$.raw.head;
+                if (type === 'part') {
+                  body = this$.raw.body.filter(function(b){
+                    var ref$, s, e, ps, pe;
+                    ref$ = [b["起計日"], b["迄計日"]], s = ref$[0], e = ref$[1];
+                    ps = dates.picked.start || dates.list[0];
+                    pe = dates.picked.end || (ref$ = dates.list)[ref$.length - 1];
+                    return s >= ps && s <= pe && e >= ps && e <= pe;
+                  });
+                } else if (type === 'part-filter-tw') {
+                  body = this$.data.part.movie.tw;
+                } else if (type === 'part-filter') {
+                  body = this$.data.part.movie.all;
+                } else {
+                  body = this$.raw.body;
+                }
+                data = body.map(function(b){
+                  return head.map(function(h){
+                    var v;
+                    v = b[h];
+                    return v = Array.isArray(v)
+                      ? v.join(',')
+                      : !(v != null)
+                        ? ''
+                        : v + "";
+                  });
+                });
+                data = data.map(function(it){
+                  var ret;
+                  ret = it.slice(0, 4);
+                  ret[1] = ret[1].replace(/^(..)/, '$1/');
+                  ret[3] = ret[3].replace(/^(..)/, '$1/');
+                  return [ret[0] + "/" + ret[1], ret[2] + "/" + ret[3]].concat(it.slice(4));
+                });
+                data = [["起計日", "迄計日"].concat(head.slice(4))].concat(data);
+                return ldfile.download({
+                  blob: csv4xls.toBlob(data),
+                  name: "result.csv"
+                });
+              },
+              "date-picker": function(arg$){
+                var evt;
+                evt = arg$.evt;
+                return evt.stopPropagation();
+              },
+              "show-detail": function(){
+                return this$.ldcv.detail.toggle();
+              },
+              "show-rank": function(){
+                return this$.ldcv.rank.toggle();
+              },
+              'switch': function(arg$){
+                var node, views;
+                node = arg$.node, views = arg$.views;
+                this$.mode = node.getAttribute('data-target');
+                views[0].render('dashboard');
+                return this$.renderChart();
+              },
+              detail: function(arg$){
+                var node, evt, c, i, idx, dir;
+                node = arg$.node, evt = arg$.evt;
+                if (!(c = ld$.parent(evt.target, '.cell', node))) {
+                  return;
+                }
+                if (!(i = ld$.find(c, 'i', 0))) {
+                  return;
+                }
+                idx = +i.getAttribute('data-idx');
+                dir = this$.sheetSort[idx] = this$.sheetSort[idx] * -1;
+                this$.sheetData.sort(function(a, b){
+                  var ret;
+                  if (typeof a[idx] === 'object') {
+                    return -1;
+                  } else if (typeof b[idx] === 'object') {
+                    return 1;
+                  }
+                  ret = a[idx] < b[idx]
+                    ? -1
+                    : a[idx] > b[idx] ? 1 : 0;
+                  return ret * dir;
+                });
+                this$.sheet.data(this$.sheetData.filter(function(d, i){
+                  if (!(i && this$.sheetKeyword)) {
+                    return true;
+                  }
+                  return ~JSON.stringify(d).indexOf(this$.sheetKeyword);
+                }));
+                this$.sheetHead.map(function(d, i){
+                  return ld$.find(d.node, 'i', 0).setAttribute('class', '');
+                });
+                return i.classList.add(dir > 0 ? 'i-dart-down' : 'i-dart-up');
+              }
+            },
+            input: {
+              "detail-search": debounce(350, function(arg$){
+                var node, keyword;
+                node = arg$.node;
+                this$.sheetKeyword = keyword = node.value || '';
+                return this$.sheet.data(this$.sheetData.filter(function(d, i){
+                  if (!(i && keyword)) {
+                    return true;
+                  }
+                  return ~JSON.stringify(d).indexOf(keyword);
+                }));
+              })
+            },
+            change: {
+              "date-picker": function(arg$){
+                var node, type;
+                node = arg$.node;
+                type = node.getAttribute('data-type');
+                this$.dates.picked[type] = node.value;
+                this$.filter();
+                return this$.view.render('date-range');
+              }
+            }
+          },
+          init: {
+            ldcv: function(arg$){
+              var node;
+              node = arg$.node;
+              return this$.ldcv[node.getAttribute('data-name')] = new ldcover({
+                root: node
+              });
+            }
+          },
+          handler: {
+            loader: function(arg$){
+              var node;
+              node = arg$.node;
+              return node.classList.toggle('running', !this$.inited || this$.loading);
+            },
+            "date-range": function(arg$){
+              var node, ref$;
+              node = arg$.node;
+              if (this$.dates.picked.start === this$.dates.list[0] && this$.dates.picked.end === (ref$ = this$.dates.list)[ref$.length - 1]) {
+                node.textContent = "全部";
+                return node.classList.remove('text-sm');
+              } else {
+                node.textContent = "由 " + this$.dates.picked.start + "\n至 " + this$.dates.picked.end;
+                return node.classList.add('text-sm');
+              }
+            },
+            "date-picker": function(arg$){
+              var node, type;
+              node = arg$.node;
+              type = node.getAttribute('data-type');
+              return node.value = this$.dates.picked[type];
+            },
+            dashboard: function(arg$){
+              var node, name, grid, ref$;
+              node = arg$.node;
+              name = node.getAttribute('data-name');
+              node.classList.toggle('hide', name !== this$.mode);
+              grid = this$.layout[name].grid;
+              return ref$ = node.style, ref$.gridTemplateColumns = grid.col.join(' '), ref$.gridTemplateRows = grid.row.join(' '), ref$;
+            },
+            rank: {
+              list: function(arg$){
+                var node;
+                node = arg$.node;
+                return this$.data.all.movie.all;
+              },
+              view: {
+                handler: {
+                  rank: function(arg$){
+                    var node, ctx, idx;
+                    node = arg$.node, ctx = arg$.ctx, idx = arg$.idx;
+                    return node.textContent = ctx.rank || 1;
+                  },
+                  name: function(arg$){
+                    var node, ctx;
+                    node = arg$.node, ctx = arg$.ctx;
+                    return node.textContent = ctx["中文片名"].substring(0, 30);
+                  },
+                  country: function(arg$){
+                    var node, ctx, c;
+                    node = arg$.node, ctx = arg$.ctx;
+                    c = ctx["國別地區"];
+                    node.textContent = c.length > 1
+                      ? "多國"
+                      : c[0];
+                    node.classList.toggle('bg-primary', in$("中華民國", c));
+                    return node.classList.toggle('bg-secondary', !in$("中華民國", c));
+                  },
+                  revenue: function(arg$){
+                    var node, ctx;
+                    node = arg$.node, ctx = arg$.ctx;
+                    return node.textContent = ctx["累計銷售金額"];
+                  }
+                }
+              }
+            },
+            panel: {
+              list: function(arg$){
+                var node, name, panels;
+                node = arg$.node;
+                name = node.getAttribute('data-name');
+                panels = this$.layout[name].panels;
+                return panels;
+              },
+              key: function(it){
+                return it.idx;
+              },
+              view: {
+                action: {
+                  click: {
+                    toggle: function(arg$){
+                      var views, ctx, item;
+                      views = arg$.views, ctx = arg$.ctx;
+                      item = this$.layout[ctx.layout].panels.filter(function(it){
+                        return it.name === ctx.toggle.name;
+                      })[0];
+                      ctx.active = false;
+                      item.active = true;
+                      return this$.view.render();
+                    }
+                  }
+                },
+                text: {
+                  title: function(arg$){
+                    var ctx, ref$, ref1$, key$;
+                    ctx = arg$.ctx;
+                    return ctx.title || ((ref$ = (ref1$ = this$.chart)[key$ = ctx.name] || (ref1$[key$] = {})).info || (ref$.info = {})).title || ctx.name;
+                  },
+                  toggle: function(arg$){
+                    var ctx;
+                    ctx = arg$.ctx;
+                    if (!ctx.toggle) {
+                      return;
+                    }
+                    return ctx.toggle.text || ctx.toggle.name;
+                  }
+                },
+                init: {
+                  chart: function(arg$){
+                    var node, ctx, name, chart, ref$, ref1$, p;
+                    node = arg$.node, ctx = arg$.ctx;
+                    name = ctx.name;
+                    chart = ctx.chart || ((ref$ = (ref1$ = this$.chart)[name] || (ref1$[name] = {})).info || (ref$.info = {})).type;
+                    p = ld$.parent(node, '.pnl');
+                    ref$ = p.style;
+                    ref$.gridColumn = ctx.col[0] + " / span " + ctx.col[1];
+                    ref$.gridRow = ctx.row[0] + " / span " + ctx.row[1];
+                    if (ctx['class']) {
+                      ctx['class'].map(function(it){
+                        return p.classList.toggle(it, true);
+                      });
+                    }
+                    return (this$.initPromise || (this$.initPromise = [])).push(this$.prepareChart({
+                      chart: chart,
+                      name: name,
+                      root: node
+                    }));
+                  }
+                },
+                handler: {
+                  "@": function(arg$){
+                    var node, ctx;
+                    node = arg$.node, ctx = arg$.ctx;
+                    return node.classList.toggle('inactive', ctx.active != null && !ctx.active);
+                  }
+                }
+              }
+            },
+            date: {
+              list: function(){
+                return this$.dates.list || [];
+              },
+              handler: function(arg$){
+                var node, data;
+                node = arg$.node, data = arg$.data;
+                node.textContent = data;
+                node.setAttribute('value', data);
+                if (this$.dates.picked[node.parentNode.getAttribute('data-type')] === data) {
+                  return node.setAttribute('selected', true);
+                }
+              }
+            }
+          }
+        });
+      }).then(function(){
+        return this$.getData();
+      }).then(function(){
+        return this$.view.render();
+      }).then(function(){
+        return Promise.all(this$.initPromise || []);
+      });
+    },
+    prepareChart: function(arg$){
+      var chart, name, root, config, data, this$ = this;
+      chart = arg$.chart, name = arg$.name, root = arg$.root, config = arg$.config, data = arg$.data;
+      return this.mgr.get({
+        name: chart,
+        version: "0.0.1"
+      }).then(function(it){
+        return it.create({
+          data: data
+        });
+      }).then(function(bi){
+        return bi.attach({
+          root: root,
+          data: {
+            delayRender: true
+          }
+        }).then(function(){
+          return bi['interface']();
+        });
+      }).then(function(chart){
+        var ref$, ref1$, cfg, bind;
+        (ref$ = (ref1$ = this$.chart)[name] || (ref1$[name] = {})).info || (ref$.info = {});
+        ((ref$ = this$.chart)[name] || (ref$[name] = {})).chart = chart;
+        cfg = import$(import$({}, config || {}), ((ref$ = (ref1$ = this$.chart)[name] || (ref1$[name] = {})).info || (ref$.info = {})).cfg || {});
+        if (!cfg.pal) {
+          cfg.pal = pal;
+        }
+        chart.config(cfg);
+        chart.on('filter', function(it){
+          this$.filter();
+          this$.filters[name] = it;
+          if (this$.chart[name].info.filter) {
+            return this$.chart[name].info.filter({
+              chart: chart,
+              filter: it
+            });
+          }
+        });
+        if (bind = this$.subdata[name] || this$.chart[name].info.bind) {
+          return chart.setRaw(bind);
+        }
+      });
+    },
+    renderChart: function(){
+      var name, ref$, func, ref1$, chart, info, results$ = [];
+      for (name in ref$ = this.chart) {
+        func = ref$[name];
+        ref1$ = this.chart[name], chart = ref1$.chart, info = ref1$.info;
+        if (!(chart && info)) {
+          continue;
+        }
+        if (info.dash !== this.mode) {
+          continue;
+        }
+        chart.resize();
+        results$.push(chart.render());
+      }
+      return results$;
+    },
+    loaderWrap: function(cb){
+      var this$ = this;
+      this.loading = true;
+      this.view.render('loader');
+      return debounce(100).then(function(){
+        return cb();
+      }).then(function(){
+        return debounce(300);
+      }).then(function(){
+        this$.loading = false;
+        return this$.view.render('loader');
+      });
+    },
+    filter: debounce(300, function(){
+      var this$ = this;
+      return this.loaderWrap(function(){
+        return debounce(100).then(function(){
+          var name, ref$, func, chart, info;
+          this$.parse.tw.call(this$.data.all, this$.raw);
+          this$.parse.tw.call(this$.data.part, this$.raw, this$.filters);
+          for (name in ref$ = this$.chart) {
+            func = ref$[name];
+            if (!(chart = this$.chart[name].chart)) {
+              continue;
+            }
+            info = import$(this$.chart[name].info, func.call(this$.data.part, this$.data, this$.filters[name]));
+            chart.setRaw(info.bind);
+            chart.parse();
+          }
+          this$.renderChart();
+          this$.view.render('rank');
+          return debounce(300);
+        });
+      });
+    }),
+    parse: {
+      tw: function(data, filters){
+        var head, body, hash, ps, pe, ref$, k, v, list, i$, len$, tags, fs, f, thresholds, hs, picked, this$ = this;
+        head = data.head, body = data.body;
+        this.movie = {
+          all: [],
+          byCountry: {},
+          continentmap: {},
+          raw: {}
+        };
+        hash = {};
+        ps = dates.picked.start || dates.list[0];
+        pe = dates.picked.end || (ref$ = dates.list)[ref$.length - 1];
+        body = body.filter(function(b){
+          var ref$, s, e, ps, pe;
+          ref$ = [b["起計日"], b["迄計日"]], s = ref$[0], e = ref$[1];
+          ps = dates.picked.start || dates.list[0];
+          pe = dates.picked.end || (ref$ = dates.list)[ref$.length - 1];
+          return s >= ps && s <= pe && e >= ps && e <= pe;
+        });
+        body.map(function(b){
+          var name;
+          name = b["中文片名"];
+          if (!hash[name] || hash[name]["累計銷售金額"] > b["累計銷售金額"]) {
+            return hash[name] = b;
+          }
+        });
+        this.movie.all = (function(){
+          var ref$, results$ = [];
+          for (k in ref$ = hash) {
+            v = ref$[k];
+            results$.push(v);
+          }
+          return results$;
+        }());
+        this.movie.tw = this.movie.all.filter(function(it){
+          return in$("中華民國", it["國別地區"]);
+        });
+        if (filters) {
+          list = [['revenue', '國片累計銷售金額分布', '累計銷售金額', 'tw'], ['ticket', '國片累計銷售票數分布', '累計銷售票數', 'tw'], ['theatre', '國片上映院數分布', '上映院數', 'tw'], ['revenue', '電影累計銷售金額分布', '累計銷售金額', 'all'], ['ticket', '電影累計銷售票數分布', '累計銷售票數', 'all'], ['theatre', '電影上映院數分布', '上映院數', 'all']];
+          for (i$ = 0, len$ = list.length; i$ < len$; ++i$) {
+            tags = list[i$];
+            if (!((fs = filters[tags[1]]) && fs.name)) {
+              continue;
+            }
+            fs = fs.name.value.map(fn$);
+            this.movie[tags[3]] = this.movie[tags[3]].filter(fn1$);
+          }
+          if (filters["出品人比例"]) {
+            f = filters["出品人比例"].name || {
+              type: 'exclude',
+              value: []
+            };
+            if (f.type !== 'exclude') {
+              console.error("expected filter type for 出品人比例 should be `exclude`");
+            }
+            f = f.value || [];
+            this.movie.tw = this.movie.tw.filter(function(b){
+              return b["出品"].filter(function(it){
+                return !in$(it, f);
+              }).length;
+            });
+          }
+        }
+        this.movie.all.map(function(m){
+          return (m["國別地區"] || []).map(function(c, i){
+            var ref$;
+            ((ref$ = this$.movie.byCountry)[c] || (ref$[c] = [])).push(m);
+            return this$.movie.continentmap[c] = m["洲別"][i];
+          });
+        });
+        this.bins = {
+          tw: {},
+          all: {}
+        };
+        this.binned = {
+          tw: {},
+          all: {}
+        };
+        thresholds = {
+          revenue: [0, 1000, 5000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000, 100000000000],
+          ticket: [0, 100, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000],
+          theatre: [0, 5, 10, 15, 20, 30, 50, 70, 90]
+        };
+        this.binThresholds = {
+          tw: thresholds,
+          all: thresholds
+        };
+        this.bins.all.revenue = d3.bin().thresholds(this.binThresholds.all.revenue);
+        this.bins.all.ticket = d3.bin().thresholds(this.binThresholds.all.ticket);
+        this.bins.all.theatre = d3.bin().thresholds(this.binThresholds.all.theatre);
+        this.bins.tw.revenue = d3.bin().thresholds(this.binThresholds.tw.revenue);
+        this.bins.tw.ticket = d3.bin().thresholds(this.binThresholds.tw.ticket);
+        this.bins.tw.theatre = d3.bin().thresholds(this.binThresholds.tw.theatre);
+        this.binned.all.revenue = this.bins.all.revenue(this.movie.all.map(function(it){
+          return it["累計銷售金額"];
+        }));
+        this.binned.all.ticket = this.bins.all.ticket(this.movie.all.map(function(it){
+          return it["累計銷售票數"];
+        }));
+        this.binned.all.theatre = this.bins.all.theatre(this.movie.all.map(function(it){
+          return it["上映院數"];
+        }));
+        this.binned.tw.revenue = this.bins.tw.revenue(this.movie.tw.map(function(it){
+          return it["累計銷售金額"];
+        }));
+        this.binned.tw.ticket = this.bins.tw.ticket(this.movie.tw.map(function(it){
+          return it["累計銷售票數"];
+        }));
+        this.binned.tw.theatre = this.bins.tw.theatre(this.movie.tw.map(function(it){
+          return it["上映院數"];
+        }));
+        this.movie.all.sort(function(a, b){
+          return b["累計銷售金額"] - a["累計銷售金額"];
+        });
+        this.movie.all.map(function(d, i){
+          return d.rank = i + 1;
+        });
+        this.total = {
+          all: {
+            revenue: this.movie.all.reduce(function(a, b){
+              return a + b["累計銷售金額"];
+            }, 0),
+            ticket: this.movie.all.reduce(function(a, b){
+              return a + b["累計銷售票數"];
+            }, 0)
+          },
+          tw: {
+            revenue: this.movie.tw.reduce(function(a, b){
+              return a + b["累計銷售金額"];
+            }, 0),
+            ticket: this.movie.tw.reduce(function(a, b){
+              return a + b["累計銷售票數"];
+            }, 0)
+          }
+        };
+        hs = head.slice(5);
+        hs = hs.filter(function(it){
+          return !(it === '銷售票數' || it === '銷售金額');
+        });
+        picked = {
+          tw: {},
+          all: {}
+        };
+        ['all', 'tw'].map(function(tag){
+          return this$.movie[tag].map(function(m){
+            return picked[tag][m["中文片名"]] = true;
+          });
+        });
+        this.movie.all.map(function(){
+          return picked.all;
+        });
+        this.date = {
+          revenue: {}
+        };
+        body.map(function(m){
+          var t, r, o;
+          t = m["迄計日"];
+          r = m["銷售金額"];
+          o = this$.date.revenue[t] || (this$.date.revenue[t] = {});
+          o.date = t;
+          if (picked.all[m["中文片名"]]) {
+            o.all = (o.all || 0) + r;
+          }
+          if (picked.tw[m["中文片名"]]) {
+            if (m["來源"] === '國內') {
+              o.tw = (o.tw || 0) + r;
+            }
+          }
+          if (m["來源"] !== '國內') {
+            return o.other = (o.other || 0) + r;
+          }
+        });
+        return fillDate((function(){
+          var results$ = [];
+          for (k in this.date.revenue) {
+            results$.push(k);
+          }
+          return results$;
+        }.call(this))).map(function(d){
+          if (this$.date.revenue[d]) {
+            return;
+          }
+          return this$.date.revenue[d] = {
+            date: d,
+            all: 0,
+            tw: 0,
+            other: 0
+          };
+        });
+        function fn$(it){
+          var bins, idx, i$, to$, i;
+          bins = this$.binThresholds[tags[3]][tags[0]];
+          if (!~(idx = bins.indexOf(+it))) {
+            for (i$ = 0, to$ = bins.length; i$ < to$; ++i$) {
+              i = i$;
+              if (bins[i] < +it) {
+                continue;
+              }
+              idx = i;
+              break;
+            }
+            if (!~idx) {
+              idx = bins.length;
+            }
+          }
+          return [bins[idx - 1], +it];
+        }
+        function fn1$(b){
+          var v;
+          v = b[tags[2]];
+          return fs.filter(function(f){
+            return v >= f[0] && v <= f[1];
+          }).length;
+        }
+      }
+    },
+    getData: function(){
+      var this$ = this;
+      return ld$.fetch("/assets/data/tfi/all.json", {
+        method: 'GET'
+      }, {
+        type: 'json'
+      }).then(function(data){
+        var head, body, ref$, timestamp, hs, hsn, name, func, results$ = [];
+        head = data.head;
+        body = data.body.map(function(b){
+          return Object.fromEntries(head.map(function(h, i){
+            return [h, b[i]];
+          }));
+        });
+        this$.raw = {
+          name: "電影票房資訊",
+          head: head,
+          body: body
+        };
+        body.map(function(it){
+          it["起計日"] = it['src-year'] + "/" + it['src-date'].substring(0, 2) + "/" + it['src-date'].substring(2);
+          it["迄計日"] = it['des-year'] + "/" + it['des-date'].substring(0, 2) + "/" + it['des-date'].substring(2);
+          it["來源"] = in$("中華民國", it["國別地區"]) ? "國內" : "國外";
+          it["中文片名"] = it["中文片名"].replace(/ /g, '');
+          return it["申請人"] = it["申請人"].replace(/ /g, '');
+        });
+        this$.dates.list = Array.from(new Set(body.map(function(it){
+          return it["迄計日"];
+        })));
+        this$.dates.list = fillDate(this$.dates.list);
+        this$.dates.picked.end = (ref$ = this$.dates.list)[ref$.length - 1];
+        timestamp = new Date(this$.dates.picked.end).getTime() - 86400000 * 182;
+        this$.dates.picked.start = this$.dates.list.filter(function(it){
+          return new Date(it).getTime() >= timestamp;
+        })[0] || (ref$ = this$.dates.list)[ref$.length - 1];
+        this$.data = {
+          all: {},
+          part: {}
+        };
+        this$.parse.tw.call(this$.data.all, this$.raw);
+        this$.parse.tw.call(this$.data.part, this$.raw);
+        hs = ['國別地區', '中文片名', '上映日期', '上映院數', '累計銷售票數', '累計銷售金額', '申請人', '出品'];
+        this$.sheetHead = hsn = hs.map(function(d, i){
+          var div;
+          div = document.createElement('div');
+          div.classList.add('w-100', 'h-100', 'd-flex', 'justify-content-between', 'align-items-center');
+          div.innerHTML = "<div>" + d + "</div><div class=\"text-sm mx-1\"><i class=\"\" data-idx=\"" + i + "\"></div>";
+          return {
+            type: 'dom',
+            node: div
+          };
+        });
+        this$.sheetSort = hs.map(function(){
+          return -1;
+        });
+        this$.sheetData = [hsn].concat(this$.data.all.movie.all.map(function(m){
+          return hs.map(function(h){
+            if (Array.isArray(m[h])) {
+              return m[h].join('\n');
+            } else {
+              return m[h];
+            }
+          });
+        }));
+        this$.sheet = new sheet({
+          root: this$.view.get('detail'),
+          data: this$.sheetData,
+          frozen: {
+            row: 1
+          },
+          size: {
+            col: ['6em', '15em', '7em', '6em', '8em', '8em', '24em']
+          },
+          editing: false
+        });
+        for (name in ref$ = this$.chart) {
+          func = ref$[name];
+          results$.push(this$.chart[name].info = func.call(this$.data.part, this$.data));
+        }
+        return results$;
+      });
+    }
+  });
+  return this.init().then(function(){
+    this$.inited = true;
+    return this$.view.render('loader');
+  });
+});
+function import$(obj, src){
+  var own = {}.hasOwnProperty;
+  for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+  return obj;
+}
+function in$(x, xs){
+  var i = -1, l = xs.length >>> 0;
+  while (++i < l) if (x === xs[i]) return true;
+  return false;
+}</script><script>(function(it){
+  return it.apply(dashboard);
+})(function(){
+  this.layout.tw = {
+    grid: {
+      col: ['1fr', '1fr', '1fr', '2fr', '1fr', '2fr'],
+      row: ['2fr', '2fr', '2fr', '2fr']
+    },
+    panels: [
+      {
+        row: [1, 1],
+        col: [1, 1],
+        name: '國片總上映數',
+        'class': ['highlight', 'color', 'color-film']
+      }, {
+        row: [1, 1],
+        col: [2, 1],
+        name: '國片票房總金額',
+        'class': ['highlight', 'color', 'color-revenue']
+      }, {
+        row: [1, 1],
+        col: [3, 1],
+        name: '國片總售票數',
+        'class': ['highlight', 'color', 'color-ticket']
+      }, {
+        row: [1, 1],
+        col: [4, 2],
+        name: '國片當週銷售走勢'
+      }, {
+        row: [2, 1],
+        col: [5, 2],
+        name: '國片與外片逐週銷售比例'
+      }, {
+        row: [3, 2],
+        col: [5, 2],
+        name: '出品人比例'
+      }, {
+        row: [2, 3],
+        col: [3, 2],
+        name: '國片銷售排行與票房佔比'
+      }, {
+        row: [2, 1],
+        col: [1, 2],
+        name: '國片累計銷售金額分布'
+      }, {
+        row: [3, 1],
+        col: [1, 2],
+        name: '國片累計銷售票數分布'
+      }, {
+        row: [4, 1],
+        col: [1, 2],
+        name: '國片上映院數分布'
+      }
+    ]
+  };
+  this.layout.tw.panels.map(function(d, i){
+    return d.idx = i, d.layout = 'tw', d;
+  });
+  this.chart["電影銷售總排行與票房佔比"] = function(){
+    var bind, cfg;
+    bind = {
+      raw: this.movie.all,
+      binding: {
+        name: {
+          key: "中文片名"
+        },
+        value: {
+          key: "累計銷售金額"
+        }
+      }
+    };
+    cfg = {
+      line: '#fff',
+      collapse: {
+        enabled: true,
+        method: 'count',
+        threshold: 15
+      }
+    };
+    return {
+      bind: bind,
+      cfg: cfg,
+      type: 'percent-list',
+      dash: 'tw'
+    };
+  };
+  this.chart["國片銷售排行與票房佔比"] = function(){
+    var bind, cfg;
+    bind = {
+      raw: this.movie.tw,
+      binding: {
+        name: {
+          key: "中文片名"
+        },
+        value: {
+          key: "累計銷售金額"
+        }
+      }
+    };
+    cfg = {
+      line: '#fff',
+      collapse: {
+        enabled: true,
+        method: 'count',
+        threshold: 15
+      }
+    };
+    return {
+      bind: bind,
+      cfg: cfg,
+      type: 'percent-list',
+      dash: 'tw'
+    };
+  };
+  this.chart["出品人比例"] = function(data, filter){
+    var hash, bind, k, v, cfg;
+    filter == null && (filter = {});
+    hash = {};
+    this.movie.tw.map(function(d){
+      return (d["出品"] || []).map(function(it){
+        return hash[it] = (hash[it] || 0) + 1;
+      });
+    });
+    bind = {
+      raw: (function(){
+        var ref$, results$ = [];
+        for (k in ref$ = hash) {
+          v = ref$[k];
+          results$.push({
+            "出品人": k,
+            "數量": v
+          });
+        }
+        return results$;
+      }()),
+      binding: {
+        name: {
+          key: "出品人"
+        },
+        size: {
+          key: "數量",
+          unit: "部"
+        }
+      }
+    };
+    cfg = {};
+    return {
+      bind: bind,
+      cfg: cfg,
+      type: "bar-list",
+      dash: 'tw'
+    };
+  };
+  this.chart["申請人比例"] = function(){
+    var hash, bind, k, v, cfg;
+    hash = {};
+    this.movie.all.map(function(d){
+      var a;
+      a = d["申請人"];
+      if (a) {
+        return hash[a] = (hash[a] || 0) + 1;
+      }
+    });
+    bind = {
+      raw: (function(){
+        var ref$, results$ = [];
+        for (k in ref$ = hash) {
+          v = ref$[k];
+          results$.push({
+            name: k,
+            value: v
+          });
+        }
+        return results$;
+      }()),
+      binding: {
+        name: {
+          key: "name"
+        },
+        value: {
+          key: "value"
+        }
+      }
+    };
+    cfg = {
+      collapse: {
+        enabled: true,
+        method: 'count',
+        threshold: 6
+      }
+    };
+    return {
+      bind: bind,
+      cfg: cfg,
+      type: "pie",
+      dash: 'tw'
+    };
+  };
+  this.chart["電影來源國家"] = function(){
+    var bind, k, v, cfg;
+    bind = {
+      raw: (function(){
+        var ref$, results$ = [];
+        for (k in ref$ = this.movie.byCountry) {
+          v = ref$[k];
+          results$.push({
+            name: k,
+            value: v.length
+          });
+        }
+        return results$;
+      }.call(this)),
+      binding: {
+        value: {
+          key: "value"
+        },
+        name: {
+          key: "name"
+        }
+      }
+    };
+    cfg = {
+      collapse: {
+        enabled: true,
+        threshold: 5,
+        method: 'count'
+      }
+    };
+    return {
+      cfg: cfg,
+      bind: bind,
+      type: 'pie',
+      dash: 'tw'
+    };
+  };
+  this.chart["國片銷售佔比樹狀圖"] = function(){
+    var cfg, bind;
+    cfg = {};
+    bind = {
+      raw: this.movie.tw,
+      binding: {
+        name: {
+          key: "中文片名"
+        },
+        area: {
+          key: "累計銷售金額",
+          name: "票房"
+        }
+      }
+    };
+    return {
+      bind: bind,
+      cfg: cfg,
+      type: 'treemap',
+      dash: 'tw'
+    };
+  };
+  this.chart["國片總上映數"] = function(){
+    var bind;
+    bind = {
+      raw: [{
+        value: this.movie.tw.length,
+        number: "國片總上映數"
+      }],
+      binding: {
+        value: {
+          key: "value",
+          unit: "部"
+        },
+        name: {
+          key: "name"
+        }
+      }
+    };
+    return {
+      bind: bind,
+      cfg: {},
+      type: 'number',
+      dash: 'tw'
+    };
+  };
+  this.chart["國片票房總金額"] = function(){
+    var bind;
+    bind = {
+      raw: [{
+        value: Math.round(this.total.tw.revenue / 1000000),
+        number: "累計銷售金額"
+      }],
+      binding: {
+        value: {
+          key: "value",
+          unit: "百萬新臺幣"
+        },
+        name: {
+          key: "name"
+        }
+      }
+    };
+    return {
+      bind: bind,
+      cfg: {},
+      type: 'number',
+      dash: 'tw'
+    };
+  };
+  this.chart["國片總售票數"] = function(){
+    var bind;
+    bind = {
+      raw: [{
+        value: Math.round(this.total.tw.ticket / 1000000),
+        number: "總銷售票數"
+      }],
+      binding: {
+        value: {
+          key: "value",
+          unit: "百萬張"
+        },
+        name: {
+          key: "name"
+        }
+      }
+    };
+    return {
+      bind: bind,
+      cfg: {},
+      type: 'number',
+      dash: 'tw'
+    };
+  };
+  this.chart["國片累計銷售金額分布"] = function(data, filter){
+    var raw, bind, c, cfg;
+    filter == null && (filter = {});
+    raw = data.all.binned.tw.revenue.map(function(a){
+      var b;
+      b = data.part.binned.tw.revenue.filter(function(t){
+        return t.x0 >= a.x0 && t.x0 < a.x1;
+      })[0] || [];
+      return {
+        excluded: a.length - b.length,
+        picked: b.length,
+        name: a.x1 + ""
+      };
+    });
+    bind = {
+      raw: raw,
+      binding: {
+        size: [
+          {
+            key: "picked",
+            name: "銷售金額"
+          }, {
+            key: "excluded",
+            name: "銷售金額"
+          }
+        ],
+        name: {
+          key: "name",
+          filter: filter.name
+        }
+      }
+    };
+    c = pal.colors[0];
+    cfg = {
+      tickFormat: '.0~s',
+      tickCount: 3,
+      dancing: false,
+      legend: {
+        enabled: false
+      },
+      xaxis: {
+        showCaption: false
+      },
+      pal: {
+        colors: [ldcolor.darker(c, 5), c]
+      }
+    };
+    return {
+      bind: bind,
+      cfg: cfg,
+      type: 'bar',
+      dash: 'tw'
+    };
+  };
+  this.chart["國片累計銷售票數分布"] = function(data){
+    var raw, bind, c, cfg;
+    raw = data.all.binned.tw.ticket.map(function(a){
+      var b;
+      b = data.part.binned.tw.ticket.filter(function(t){
+        return t.x0 >= a.x0 && t.x0 < a.x1;
+      })[0] || [];
+      return {
+        excluded: a.length - b.length,
+        picked: b.length,
+        name: a.x1 + "",
+        start: a.x1,
+        end: a.x2
+      };
+    });
+    bind = {
+      raw: raw,
+      binding: {
+        size: [
+          {
+            key: "picked",
+            name: "銷售票數"
+          }, {
+            key: "excluded",
+            name: "銷售票數"
+          }
+        ],
+        name: {
+          key: "name"
+        }
+      }
+    };
+    c = pal.colors[1];
+    cfg = {
+      tickFormat: '.0~s',
+      toggleLegend: false,
+      tickCount: 3,
+      dancing: false,
+      legend: {
+        enabled: false
+      },
+      xaxis: {
+        showCaption: false
+      },
+      pal: {
+        colors: [ldcolor.darker(c, 5), c]
+      }
+    };
+    return {
+      bind: bind,
+      cfg: cfg,
+      type: 'bar',
+      dash: 'tw'
+    };
+  };
+  this.chart["國片上映院數分布"] = function(data){
+    var raw, bind, c, cfg;
+    raw = data.all.binned.tw.theatre.map(function(a){
+      var b;
+      b = data.part.binned.tw.theatre.filter(function(t){
+        return t.x0 >= a.x0 && t.x0 < a.x1;
+      })[0] || [];
+      return {
+        excluded: a.length - b.length,
+        picked: b.length,
+        name: a.x1 + ""
+      };
+    });
+    bind = {
+      raw: raw,
+      binding: {
+        size: [
+          {
+            key: "picked",
+            name: "上映院數"
+          }, {
+            key: "excluded",
+            name: "上映院數"
+          }
+        ],
+        name: {
+          key: "name"
+        }
+      }
+    };
+    c = pal.colors[2];
+    cfg = {
+      tickCount: 3,
+      dancing: false,
+      legend: {
+        enabled: false
+      },
+      xaxis: {
+        showCaption: false
+      },
+      pal: {
+        colors: [ldcolor.darker(c, 5), c]
+      }
+    };
+    return {
+      bind: bind,
+      cfg: cfg,
+      type: 'bar',
+      dash: 'tw'
+    };
+  };
+  this.chart["國片當週銷售走勢"] = function(){
+    var list, res$, k, ref$, v, bind, cfg;
+    res$ = [];
+    for (k in ref$ = this.date.revenue) {
+      v = ref$[k];
+      res$.push(v);
+    }
+    list = res$;
+    list.sort(function(a, b){
+      if (a.date > b.date) {
+        return 1;
+      } else if (a.date < b.date) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+    list.map(function(d){
+      var v;
+      v = d.date.split('/');
+      return d.dateText = v[0] + "\n" + v[1] + "/" + v[2];
+    });
+    bind = {
+      raw: list,
+      binding: {
+        value: [{
+          key: 'tw',
+          name: '票房',
+          unit: '元'
+        }],
+        order: {
+          key: 'dateText',
+          name: '日期'
+        }
+      }
+    };
+    cfg = {
+      dotSize: 1.5,
+      legend: {
+        enabled: false
+      },
+      xaxis: {
+        enabled: true,
+        showCaption: false
+      },
+      yaxis: {
+        enabled: true,
+        boundaryTickOffset: false,
+        format: d3.format('.2s')
+      }
+    };
+    return {
+      bind: bind,
+      cfg: cfg,
+      type: 'line',
+      dash: 'tw'
+    };
+  };
+  return this.chart["國片與外片逐週銷售比例"] = function(){
+    var list, res$, k, ref$, v, bind, cfg;
+    res$ = [];
+    for (k in ref$ = this.date.revenue) {
+      v = ref$[k];
+      res$.push(v);
+    }
+    list = res$;
+    list.sort(function(a, b){
+      if (a.date > b.date) {
+        return 1;
+      } else if (a.date < b.date) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+    list.map(function(d, idx){
+      var v;
+      d.idx = idx;
+      v = d.date.split('/');
+      return d.dateText = v[0] + "\n" + v[1] + "/" + v[2];
+    });
+    bind = {
+      raw: list,
+      binding: {
+        size: [
+          {
+            key: 'tw',
+            name: '國內'
+          }, {
+            key: 'other',
+            name: '國外'
+          }
+        ],
+        name: {
+          key: 'dateText',
+          name: '日期'
+        }
+      }
+    };
+    cfg = {
+      percent: true,
+      xaxis: {
+        enabled: true,
+        showCaption: false
+      },
+      yaxis: {
+        enabled: false
+      },
+      brush: {
+        enabled: false
+      },
+      pal: {
+        colors: [pal.colors[0], ldcolor.web(ldcolor.complement(pal.colors[0]))]
+      }
+    };
+    return {
+      bind: bind,
+      cfg: cfg,
+      type: 'bar',
+      dash: 'tw'
+    };
+  };
+});</script><script>(function(it){
+  return it.apply(dashboard);
+})(function(){
+  this.layout.all = {
+    grid: {
+      col: ['1fr', '1fr', '1fr', '2fr', '1fr', '2fr'],
+      row: ['2fr', '1fr', '1fr', '1fr', '1fr', '1fr', '1fr']
+    },
+    panels: [
+      {
+        row: [1, 1],
+        col: [1, 1],
+        name: '電影總上映數',
+        'class': ['highlight', 'color', 'color-film']
+      }, {
+        row: [1, 1],
+        col: [2, 1],
+        name: '電影票房總金額',
+        'class': ['highlight', 'color', 'color-revenue']
+      }, {
+        row: [1, 1],
+        col: [3, 1],
+        name: '電影總售票數',
+        'class': ['highlight', 'color', 'color-ticket']
+      }, {
+        row: [1, 1],
+        col: [4, 2],
+        name: '電影當週銷售走勢'
+      }, {
+        row: [2, 2],
+        col: [1, 2],
+        name: '電影累計銷售金額分布'
+      }, {
+        row: [4, 2],
+        col: [1, 2],
+        name: '電影累計銷售票數分布'
+      }, {
+        row: [6, 2],
+        col: [1, 2],
+        name: '電影上映院數分布'
+      }, {
+        row: [2, 6],
+        col: [3, 2],
+        name: '上映電影之來源國家比較'
+      }, {
+        row: [2, 3],
+        col: [5, 2],
+        name: '上映之各國電影數量'
+      }, {
+        row: [5, 3],
+        col: [5, 2],
+        name: '各國銷售金額合計'
+      }
+    ]
+  };
+  this.layout.all.panels.map(function(d, i){
+    return d.idx = i, d.layout = 'all', d;
+  });
+  this.chart["電影總上映數"] = function(){
+    var bind;
+    bind = {
+      raw: [{
+        value: this.movie.all.length,
+        number: "電影總上映數"
+      }],
+      binding: {
+        value: {
+          key: "value",
+          unit: "部"
+        },
+        name: {
+          key: "name"
+        }
+      }
+    };
+    return {
+      bind: bind,
+      cfg: {},
+      type: 'number',
+      dash: 'all'
+    };
+  };
+  this.chart["電影票房總金額"] = function(){
+    var bind;
+    bind = {
+      raw: [{
+        value: Math.round(this.total.all.revenue / 1000000),
+        number: "累計銷售金額"
+      }],
+      binding: {
+        value: {
+          key: "value",
+          unit: "百萬新臺幣"
+        },
+        name: {
+          key: "name"
+        }
+      }
+    };
+    return {
+      bind: bind,
+      cfg: {},
+      type: 'number',
+      dash: 'all'
+    };
+  };
+  this.chart["電影總售票數"] = function(){
+    var bind;
+    bind = {
+      raw: [{
+        value: Math.round(this.total.all.ticket / 1000000),
+        number: "總銷售票數"
+      }],
+      binding: {
+        value: {
+          key: "value",
+          unit: "百萬張"
+        },
+        name: {
+          key: "name"
+        }
+      }
+    };
+    return {
+      bind: bind,
+      cfg: {},
+      type: 'number',
+      dash: 'all'
+    };
+  };
+  this.chart["電影當週銷售走勢"] = function(){
+    var list, res$, k, ref$, v, bind, cfg;
+    res$ = [];
+    for (k in ref$ = this.date.revenue) {
+      v = ref$[k];
+      res$.push(v);
+    }
+    list = res$;
+    list.sort(function(a, b){
+      if (a.date > b.date) {
+        return 1;
+      } else if (a.date < b.date) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+    list.map(function(d){
+      var v;
+      v = d.date.split('/');
+      return d.dateText = v[0] + "\n" + v[1] + "/" + v[2];
+    });
+    bind = {
+      raw: list,
+      binding: {
+        value: [{
+          key: 'all',
+          name: '票房',
+          unit: '元'
+        }],
+        order: {
+          key: 'dateText',
+          name: '日期'
+        }
+      }
+    };
+    cfg = {
+      dotSize: 1.5,
+      legend: {
+        enabled: false
+      },
+      xaxis: {
+        enabled: true,
+        showCaption: false
+      },
+      yaxis: {
+        enabled: true,
+        boundaryTickOffset: false,
+        format: d3.format('.2s')
+      }
+    };
+    return {
+      bind: bind,
+      cfg: cfg,
+      type: 'line',
+      dash: 'all'
+    };
+  };
+  this.chart["電影累計銷售金額分布"] = function(data){
+    var raw, bind, c, cfg;
+    raw = data.all.binned.all.revenue.map(function(a){
+      var b;
+      b = data.part.binned.all.revenue.filter(function(t){
+        return t.x0 >= a.x0 && t.x0 < a.x1;
+      })[0] || [];
+      return {
+        excluded: a.length - b.length,
+        picked: b.length,
+        name: a.x1 + ""
+      };
+    });
+    bind = {
+      raw: raw,
+      binding: {
+        size: [
+          {
+            key: "picked",
+            name: "銷售金額"
+          }, {
+            key: "excluded",
+            name: "銷售金額"
+          }
+        ],
+        name: {
+          key: "name"
+        }
+      }
+    };
+    c = pal.colors[0];
+    cfg = {
+      tickFormat: '.0~s',
+      tickCount: 3,
+      dancing: false,
+      legend: {
+        enabled: false
+      },
+      xaxis: {
+        showCaption: false
+      },
+      pal: {
+        colors: [ldcolor.darker(c, 5), c]
+      }
+    };
+    return {
+      bind: bind,
+      cfg: cfg,
+      type: 'bar',
+      dash: 'all'
+    };
+  };
+  this.chart["電影累計銷售票數分布"] = function(data){
+    var raw, bind, c, cfg;
+    raw = data.all.binned.all.ticket.map(function(a){
+      var b;
+      b = data.part.binned.all.ticket.filter(function(t){
+        return t.x0 >= a.x0 && t.x0 < a.x1;
+      })[0] || [];
+      return {
+        excluded: a.length - b.length,
+        picked: b.length,
+        name: a.x1 + ""
+      };
+    });
+    bind = {
+      raw: raw,
+      binding: {
+        size: [
+          {
+            key: "picked",
+            name: "銷售票數"
+          }, {
+            key: "excluded",
+            name: "銷售票數"
+          }
+        ],
+        name: {
+          key: "name"
+        }
+      }
+    };
+    c = pal.colors[1];
+    cfg = {
+      tickFormat: '.0~s',
+      toggleLegend: false,
+      tickCount: 3,
+      dancing: false,
+      legend: {
+        enabled: false
+      },
+      xaxis: {
+        showCaption: false
+      },
+      pal: {
+        colors: [ldcolor.darker(c, 5), c]
+      }
+    };
+    return {
+      bind: bind,
+      cfg: cfg,
+      type: 'bar',
+      dash: 'all'
+    };
+  };
+  this.chart["電影上映院數分布"] = function(data){
+    var raw, bind, c, cfg;
+    raw = data.all.binned.all.theatre.map(function(a){
+      var b;
+      b = data.part.binned.all.theatre.filter(function(t){
+        return t.x0 >= a.x0 && t.x0 < a.x1;
+      })[0] || [];
+      return {
+        excluded: a.length - b.length,
+        picked: b.length,
+        name: a.x1 + ""
+      };
+    });
+    bind = {
+      raw: raw,
+      binding: {
+        size: [
+          {
+            key: "picked",
+            name: "上映院數"
+          }, {
+            key: "excluded",
+            name: "上映院數"
+          }
+        ],
+        name: {
+          key: "name"
+        }
+      }
+    };
+    c = pal.colors[2];
+    cfg = {
+      tickCount: 3,
+      dancing: false,
+      legend: {
+        enabled: false
+      },
+      xaxis: {
+        showCaption: false
+      },
+      pal: {
+        colors: [ldcolor.darker(c, 5), c]
+      }
+    };
+    return {
+      bind: bind,
+      cfg: cfg,
+      type: 'bar',
+      dash: 'all'
+    };
+  };
+  this.chart["上映之各國電影數量"] = function(data){
+    var bind, k, v, cfg;
+    bind = {
+      raw: (function(){
+        var ref$, results$ = [];
+        for (k in ref$ = this.movie.byCountry) {
+          v = ref$[k];
+          results$.push({
+            name: k,
+            value: v.length
+          });
+        }
+        return results$;
+      }.call(this)),
+      binding: {
+        color: {
+          key: "value",
+          unit: "部"
+        },
+        name: {
+          key: "name"
+        }
+      }
+    };
+    cfg = {
+      pal: {
+        colors: ['#444', '#e8c05c', '#6ee97d', '#577aeb']
+      },
+      legendFormat: '.0~s',
+      dimEmpty: true
+    };
+    return {
+      bind: bind,
+      cfg: cfg,
+      type: 'worldmap',
+      dash: 'all'
+    };
+  };
+  this.chart["上映電影之來源國家比較"] = function(data){
+    var bind, k, v, cfg;
+    bind = {
+      raw: (function(){
+        var ref$, results$ = [];
+        for (k in ref$ = this.movie.byCountry) {
+          v = ref$[k];
+          results$.push({
+            name: k,
+            value: v.length
+          });
+        }
+        return results$;
+      }.call(this)),
+      binding: {
+        name: {
+          key: "name"
+        },
+        area: {
+          key: "value",
+          unit: "部"
+        },
+        color: {
+          key: "name"
+        }
+      }
+    };
+    cfg = {};
+    return {
+      bind: bind,
+      cfg: cfg,
+      type: 'bubble',
+      dash: 'all'
+    };
+  };
+  return this.chart["各國銷售金額合計"] = function(data){
+    var bind, k, v, cfg;
+    bind = {
+      raw: (function(){
+        var ref$, results$ = [];
+        for (k in ref$ = this.movie.byCountry) {
+          v = ref$[k];
+          results$.push({
+            name: k,
+            value: v.reduce(fn$, 0),
+            category: this.movie.continentmap[k]
+          });
+        }
+        return results$;
+        function fn$(a, b){
+          return a + b["累計銷售金額"] / 1000000;
+        }
+      }.call(this)),
+      binding: {
+        name: {
+          key: "name"
+        },
+        area: {
+          key: "value",
+          unit: "百萬新臺幣"
+        },
+        category: {
+          key: "category"
+        }
+      }
+    };
+    cfg = {
+      legend: {
+        enabled: true,
+        selectable: false
+      }
+    };
+    return {
+      bind: bind,
+      cfg: cfg,
+      type: 'treemap',
+      dash: 'all'
+    };
+  };
+});</script></body></html>

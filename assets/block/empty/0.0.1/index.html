@@ -1,0 +1,76 @@
+<div style="width:100%;height:100%"><script type="@plotdb/block">({
+  pkg: {
+    name: 'empty',
+    version: '0.0.1',
+    dependencies: [
+      {
+        url: "/assets/lib/@loadingio/debounce.js/main/debounce.min.js"
+      }, {
+        url: "/assets/lib/wrap-svg-text/main/index.min.js",
+        async: false
+      }, {
+        url: "/assets/lib/@plotdb/layout/main/index.min.js",
+        async: false
+      }, {
+        url: "/assets/lib/@plotdb/layout/main/index.min.css",
+        type: 'css'
+      }, {
+        url: "/assets/lib/ldcolor/main/ldcolor.min.js",
+        async: false
+      }, {
+        url: "/assets/lib/@plotdb/chart/main/chart.js",
+        async: false
+      }, {
+        url: "/assets/lib/@plotdb/chart/main/chart.min.css",
+        type: 'css'
+      }, {
+        url: "/assets/lib/@plotdb/chart/main/utils/legend.js",
+        async: false
+      }, {
+        url: "/assets/lib/@plotdb/chart/main/utils/legend.css",
+        type: 'css'
+      }, {
+        url: "/assets/lib/@plotdb/chart/main/utils/tint.js",
+        async: false
+      }, {
+        url: "/assets/lib/@plotdb/chart/main/utils/data.js",
+        async: false
+      }
+    ]
+  },
+  init: function(arg$){
+    var root, context, pubsub, data, chart, this$ = this;
+    root = arg$.root, context = arg$.context, pubsub = arg$.pubsub, data = arg$.data;
+    chart = context.chart;
+    pubsub.on('init', function(opt){
+      var c;
+      opt == null && (opt = {});
+      opt = import$({
+        root: root,
+        delayRender: true
+      }, opt);
+      this$.chart = c = new chart(import$((opt.prepareSvg = false, opt.layout = false, opt), data));
+      return c.init().then(function(){
+        return c;
+      });
+    });
+    return this;
+  },
+  'interface': function(){
+    return this.chart;
+  },
+  mod: function(root){
+    return {
+      config: {},
+      dimension: {},
+      init: function(){},
+      resize: function(){},
+      render: function(){}
+    };
+  }
+});
+function import$(obj, src){
+  var own = {}.hasOwnProperty;
+  for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+  return obj;
+}</script></div>

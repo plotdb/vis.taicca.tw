@@ -1,0 +1,541 @@
+<div><div plug="layout"><div class="pdl-layout"><div data-type="layout"><div class="pdl-cell" data-name="yaxis">&nbsp;</div><div class="pdl-cell" data-name="view"></div><div class="pdl-cell"></div><div class="pdl-cell" data-name="xaxis">&nbsp;</div><div class="pdl-cell" data-name="legend"></div></div><div data-type="render"></div></div></div><style type="text/css">[data-name=xaxis] {
+  font-size: 0.8em;
+}
+[data-name=yaxis] {
+  font-size: 0.8em;
+}
+.pdl-layout > div[data-type=layout] {
+  display: grid;
+  grid-template-columns: fit-content(2em) 1fr fit-content(7em);
+  grid-template-rows: 1fr fit-content(1em);
+/* 0.5em for axis label at the boundary */
+  padding: 0 0.5em;
+}
+.pdl-layout > div[data-type=layout] .pdl-cell[data-name=legend] {
+  padding-left: 1em;
+  grid-column: 3;
+  grid-row: 1/span 2;
+}
+.pdl-layout.legend-below > div[data-type=layout] {
+  grid-template-columns: 2em 1fr;
+  grid-template-rows: 1fr fit-content(2em) fit-content(3em);
+}
+.pdl-layout.legend-below > div[data-type=layout] .pdl-cell[data-name=legend] {
+  padding-top: 1em;
+  grid-column: 1/span 2;
+  grid-row: 3;
+}
+</style><script type="@plotdb/block">(function(it){
+  return it();
+})(function(){
+  var blockFactory, mod;
+  blockFactory = {
+    pkg: {
+      name: 'line',
+      version: '0.0.1',
+      extend: {
+        name: "base",
+        version: "0.0.1"
+      },
+      dependencies: [],
+      i18n: {
+        "zh-TW": {
+          "y axis": "Y軸",
+          "x axis": "X軸",
+          "rank": "順位"
+        }
+      }
+    },
+    init: function(arg$){
+      var root, context, pubsub, t;
+      root = arg$.root, context = arg$.context, pubsub = arg$.pubsub, t = arg$.t;
+      return pubsub.fire('init', {
+        mod: mod({
+          context: context,
+          t: t
+        })
+      });
+    }
+  };
+  mod = function(arg$){
+    var context, t, d3, chart, axis, format, sampleCount;
+    context = arg$.context, t = arg$.t;
+    d3 = context.d3, chart = context.chart, axis = context.axis, format = context.format;
+    sampleCount = 4;
+    return {
+      sample: function(){
+        return {
+          raw: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100].map(function(val){
+            var ret;
+            ret = {};
+            (function(){
+              var i$, to$, results$ = [];
+              for (i$ = 1, to$ = sampleCount; i$ <= to$; ++i$) {
+                results$.push(i$);
+              }
+              return results$;
+            }()).map(function(i){
+              return ret["val" + i] = Math.random() * (10 - Math.abs(10 - val)) + val;
+            });
+            ret.order = val;
+            return ret;
+          }),
+          binding: {
+            value: (function(){
+              var i$, to$, results$ = [];
+              for (i$ = 1, to$ = sampleCount; i$ <= to$; ++i$) {
+                results$.push(i$);
+              }
+              return results$;
+            }()).map(function(it){
+              return {
+                key: "val" + it
+              };
+            }),
+            order: {
+              key: 'order'
+            }
+          }
+        };
+      },
+      meta: {},
+      config: {},
+      dimension: {
+        value: {
+          type: 'R',
+          name: "y axis",
+          multiple: true
+        },
+        order: {
+          type: 'ON',
+          name: "x axis"
+        }
+      },
+      init: function(){
+        var svg, tint, this$ = this;
+        svg = d3.select(this.svg);
+        ['view', 'yaxis', 'xaxis', 'legend'].map(function(it){
+          return (this$.g || (this$.g = {}))[it] = d3.select(this$.layout.getGroup(it));
+        });
+        this.tint = tint = new chart.utils.tint();
+        this.line = d3.line().defined(function(it){
+          return !isNaN(it.y1);
+        }).x(function(it){
+          return this$.scale.x(it.x);
+        }).y(function(it){
+          return this$.scale.y(it.y1);
+        });
+        this.area = d3.area().defined(function(it){
+          return !isNaN(it.y1) && !isNaN(it.y0);
+        }).x(function(it){
+          return this$.scale.x(it.x);
+        }).y0(function(it){
+          return this$.scale.y(it.y0);
+        }).y1(function(it){
+          return this$.scale.y(it.y1);
+        });
+        this.xaxis = new chart.utils.axis({
+          layout: this.layout,
+          name: 'xaxis',
+          direction: 'bottom'
+        });
+        this.yaxis = new chart.utils.axis({
+          layout: this.layout,
+          name: 'yaxis',
+          direction: 'left'
+        });
+        this.tip = new chart.utils.tip({
+          root: this.root,
+          range: function(){
+            return this$.layout.getNode('view').getBoundingClientRect();
+          }
+        });
+        this._evthdr = {};
+        this.root.addEventListener('mouseout', this._evthdr.out = function(evt){
+          return this$.tip.hide().now();
+        });
+        this.root.addEventListener('mousemove', this._evthdr.move = function(evt){
+          var x, y, min, i$, to$, i, series, j$, to1$, j, p, dx, dy, d, bind, pt, data, box;
+          x = evt.clientX - this$.layout.getNode('view').getBoundingClientRect().x;
+          y = evt.clientY - this$.layout.getNode('view').getBoundingClientRect().y;
+          min = {
+            d: -1,
+            p: null,
+            series: null
+          };
+          for (i$ = 0, to$ = this$.parsed.length; i$ < to$; ++i$) {
+            i = i$;
+            series = this$.parsed[i];
+            for (j$ = 0, to1$ = series.pts.length; j$ < to1$; ++j$) {
+              j = j$;
+              p = series.pts[j];
+              if (isNaN(p.y1) || isNaN(p.x)) {
+                continue;
+              }
+              dx = Math.abs(this$.scale.x(p.x) - x);
+              dy = Math.abs(this$.scale.y(p.y1) - y);
+              d = Math.pow(dx, 2) + Math.pow(dy, 2);
+              if (min.d < 0 || min.d > d) {
+                min.d = d;
+                min.p = p;
+                min.series = series;
+              }
+            }
+          }
+          if (!(min.p && min.d && min.series)) {
+            return;
+          }
+          bind = min.series.bind;
+          pt = min.p;
+          data = {
+            name: (bind ? bind.name || bind.key || '' : void 8) + " /\n" + (pt.data.orderText || pt.data.order || pt.x) + (this$.binding.order.unit || ''),
+            value: isNaN(pt.v)
+              ? '-'
+              : pt.v.toFixed(2) + "" + (bind ? bind.unit || '' : '')
+          };
+          box = {
+            x: this$.scale.x(pt.x),
+            y: this$.scale.y(pt.y)
+          };
+          return this$.tip.render({
+            data: data,
+            evt: evt,
+            box: box
+          });
+        });
+        this.legend = new chart.utils.legend({
+          layout: this.layout,
+          root: this.root,
+          name: 'legend',
+          shape: function(d){
+            return d3.select(this).attr('fill', tint.get(d.text));
+          },
+          direction: 'vertical',
+          cfg: {
+            selectable: true
+          }
+        });
+        this.legend.on('select', function(){
+          this$.bind();
+          this$.resize();
+          return this$.render();
+        });
+        return this.scale = {
+          x: d3.scaleLinear(),
+          y: d3.scaleLinear()
+        };
+      },
+      destroy: function(){
+        this.root.removeEventListener('mouseout', this._evthdr.out);
+        this.root.removeEventListener('mousemove', this._evthdr.move);
+        return this.tip.destroy();
+      },
+      parse: function(){
+        this.data.map(function(d, i){
+          d.orderText = '' + (!(d.order != null)
+            ? i
+            : d.order);
+          return d._order = !(d.order != null) || isNaN(+d.order)
+            ? i
+            : +d.order;
+        });
+        this.data.sort(function(a, b){
+          if (a._order > b._order) {
+            return 1;
+          } else if (a._order === b._order) {
+            return 0;
+          } else {
+            return -1;
+          }
+        });
+        return this.legend.data(this.binding.value.map(function(it){
+          return {
+            key: it.key,
+            text: it.key
+          };
+        }));
+      },
+      bind: function(){
+        var binds, dd, ys, i$, to$, i, b, last, this$ = this, results$ = [];
+        binds = this.binding.value;
+        binds = this.binding.value.map(function(b, i){
+          return {
+            b: b,
+            i: i
+          };
+        }).filter(function(d, i){
+          return this$.legend.isSelected(d.b.key);
+        });
+        if (this.cfg.bump) {
+          this.parsed = [];
+          dd = this.data.map(function(d){
+            var ret, v;
+            ret = import$({}, d);
+            v = ret.value.map(function(d, i){
+              return {
+                i: i,
+                v: this$.legend.isSelected(this$.binding.value[i].key) ? d : NaN
+              };
+            });
+            v.sort(function(a, b){
+              if (isNaN(a.v) && isNaN(b.v)) {
+                return 0;
+              } else if (isNaN(b.v)) {
+                return -1;
+              } else if (isNaN(a.v)) {
+                return 1;
+              }
+              return b.v - a.v;
+            });
+            v.map(function(d, i){
+              return d.r = i + 1;
+            });
+            v.sort(function(a, b){
+              return a.i - b.i;
+            });
+            ret.value = v.map(function(it){
+              if (isNaN(it.v)) {
+                return NaN;
+              } else {
+                return it.r;
+              }
+            });
+            ret.originalValue = v.map(function(it){
+              return it.v;
+            });
+            return ret;
+          });
+        }
+        this.parsed = binds.map(function(b, i){
+          return {
+            pts: (dd || this$.data).map(function(d, j){
+              return {
+                data: d,
+                y0: 0,
+                y1: d.value[b.i],
+                x: d._order,
+                v: d.originalValue
+                  ? d.originalValue[i]
+                  : d.value[i]
+              };
+            }),
+            bind: b.b,
+            color: b.b.name || b.b.key
+          };
+        });
+        if (this.cfg.stack) {
+          ys = this.data.map(function(it){
+            return it.value.reduce(function(a, b){
+              return a + b;
+            }, 0);
+          });
+          this.parsed = [];
+          for (i$ = 0, to$ = binds.length; i$ < to$; ++i$) {
+            i = i$;
+            b = binds[i].b;
+            last = this.parsed[i - 1] || null;
+            results$.push(this.parsed.push({
+              pts: this.data.map(fn$),
+              bind: b,
+              color: b.name || b.key
+            }));
+          }
+          return results$;
+        }
+        function fn$(d, j){
+          return {
+            y1: d.value[i] + (!last
+              ? 0
+              : last.pts[j].y1),
+            y0: !last
+              ? 0
+              : last.pts[j].y1,
+            x: d._order,
+            v: d.originalValue
+              ? d.originalValue[i]
+              : d.value[i]
+          };
+        }
+      },
+      resize: function(){
+        var ref$, miny, maxy, i$, to$, i, j$, to1$, j, p, w, h, maxTick, yticks, ref1$, yfmt, units, v, box, r, results$ = [];
+        this.tip.toggle(((ref$ = this.cfg).tip || (ref$.tip = {})).enabled != null ? this.cfg.tip.enabled : true);
+        ref$ = [0, 0], miny = ref$[0], maxy = ref$[1];
+        for (i$ = 0, to$ = this.parsed.length; i$ < to$; ++i$) {
+          i = i$;
+          for (j$ = 0, to1$ = this.parsed[i].pts.length; j$ < to1$; ++j$) {
+            j = j$;
+            p = this.parsed[i].pts[j];
+            if (!isNaN(p.y0) && miny > p.y0) {
+              miny = p.y0;
+            }
+            if (!isNaN(p.y1) && miny > p.y1) {
+              miny = p.y1;
+            }
+            if (!isNaN(p.y0) && maxy < p.y0) {
+              maxy = p.y0;
+            }
+            if (!isNaN(p.y1) && maxy < p.y1) {
+              maxy = p.y1;
+            }
+          }
+        }
+        this.extent = {
+          x: d3.extent(this.data, function(it){
+            return it._order;
+          }),
+          y: [this.cfg.bump ? miny > 1 ? miny : 1 : miny, maxy === miny ? miny + 1 : maxy]
+        };
+        this.scale.x.domain(this.extent.x);
+        this.scale.y.domain(this.cfg.bump
+          ? [this.extent.y[1], this.extent.y[0]]
+          : this.extent.y);
+        ref$ = [this.box.width, this.box.height], w = ref$[0], h = ref$[1];
+        maxTick = (ref$ = Math.ceil(this.layout.getBox('yaxis').height / 40)) > 2 ? ref$ : 2;
+        yticks = this.cfg.bump
+          ? (function(){
+            var i$, to$, ref$, results$ = [];
+            for (i$ = 1, to$ = (ref$ = this.parsed.length || 1) > 1 ? ref$ : 1; i$ <= to$; ++i$) {
+              results$.push(i$);
+            }
+            return results$;
+          }.call(this))
+          : this.scale.y.ticks((ref$ = ((ref1$ = this.cfg).yaxis || (ref1$.yaxis = {})).tickCount || 4) < maxTick ? ref$ : maxTick);
+        yfmt = chart.utils.format.auto(yticks);
+        this.legend.config(this.cfg.legend);
+        this.legend.update();
+        this.yaxis.config(this.cfg.yaxis);
+        this.yaxis.ticks(yticks);
+        this.yaxis.scale(this.scale.y);
+        if (this.cfg.bump) {
+          this.yaxis.caption(t('rank'));
+        } else {
+          if (this.parsed.length > 1) {
+            units = Array.from(new Set(this.parsed.map(function(it){
+              return it.bind.unit;
+            }))).filter(function(it){
+              return it;
+            });
+            if (units.length > 1) {
+              this.yaxis.caption('');
+            } else {
+              this.yaxis.caption(units[0] || '');
+            }
+          } else {
+            v = (this.parsed[0] || {}).bind || {};
+            this.yaxis.caption((v.name || v.key || '') + (v.unit ? "(" + v.unit + ")" : ''));
+          }
+        }
+        this.xaxis.config(this.cfg.xaxis);
+        this.xaxis.ticks(this.data.map(function(it){
+          return {
+            v: it._order,
+            t: it.orderText
+          };
+        }));
+        this.xaxis.scale(this.scale.x);
+        this.xaxis.caption((this.binding.order.name || this.binding.order.key) + (this.binding.order.unit ? "(" + this.binding.order.unit + ")" : ''));
+        for (i$ = 0; i$ < 2; ++i$) {
+          i = i$;
+          this.layout.update(false);
+          box = this.layout.getBox('view');
+          ref$ = [box.width, box.height], w = ref$[0], h = ref$[1];
+          this.tint.set(this.cfg.pal);
+          r = this.cfg.dotSize || 3;
+          this.scale.x.range([0, w - r]);
+          this.scale.y.range([h, r]);
+          this.xaxis.render();
+          results$.push(this.yaxis.render());
+        }
+        return results$;
+      },
+      render: function(){
+        var scale, tint, extent, r, vbox, lbox, x$, y$, this$ = this;
+        scale = this.scale, tint = this.tint, extent = this.extent;
+        r = this.cfg.dotSize || 3;
+        vbox = this.layout.getBox('view');
+        lbox = this.layout.getBox('yaxis');
+        x$ = this.g.view.selectAll('path.data').data(this.parsed, function(it){
+          return it.bind.key;
+        });
+        x$.exit().remove();
+        x$.enter().append('path').attr('class', 'data').attr('fill', 'none').attr('d', function(d, i){
+          if (this$.cfg.stack || this$.cfg.area) {
+            return this$.area(d.pts);
+          } else {
+            return this$.line(d.pts);
+          }
+        }).attr('stroke', function(d, i){
+          return this$.tint.get(d.color);
+        }).attr('stroke-width', 1);
+        this.g.view.selectAll('path.data').transition().duration(150).style('opacity', function(d, i){
+          if (this$.legend.isSelected(d.bind.key)) {
+            return 1;
+          } else {
+            return 0.3;
+          }
+        }).attr('d', function(d, i){
+          if (this$.cfg.stack || this$.cfg.area) {
+            return this$.area(d.pts);
+          } else {
+            return this$.line(d.pts);
+          }
+        }).attr('stroke', function(d, i){
+          return this$.tint.get(d.color);
+        }).attr('fill', function(d, i){
+          if (this$.cfg.stack || this$.cfg.area) {
+            return this$.tint.get(d.color);
+          } else {
+            return 'none';
+          }
+        }).attr('fill-opacity', function(){
+          return '0.5';
+        });
+        y$ = this.g.view.selectAll('g.dot').data(this.parsed, function(it){
+          return it.bind.key;
+        });
+        y$.exit().remove();
+        y$.enter().append('g').attr('class', 'dot');
+        this.g.view.selectAll('g.dot').style('opacity', function(d, i){
+          if (this$.legend.isSelected(d.bind.key)) {
+            return 1;
+          } else {
+            return 0.3;
+          }
+        }).each(function(d, i){
+          var x$;
+          x$ = d3.select(this).selectAll('circle.dot').data(d.pts);
+          x$.exit().remove();
+          x$.enter().append('circle').attr('class', 'dot').attr('r', r).attr('fill', '#fff').attr('stroke', tint.get(d.bind.name || d.bind.key));
+          d3.select(this).selectAll('circle.dot').filter(function(d, i){
+            return isNaN(d.y1);
+          }).attr('cx', function(d, i){
+            if (isNaN(scale.x(d.x))) {
+              return scale.x(extent.x[0]);
+            } else {
+              return scale.x(d.x);
+            }
+          }).attr('cy', function(d, i){
+            return scale.y(extent.y[0]);
+          }).transition(150).attr('opacity', 0);
+          return d3.select(this).selectAll('circle.dot').filter(function(d, i){
+            return !isNaN(d.y1);
+          }).attr('cx', function(d, i){
+            return scale.x(d.x);
+          }).attr('cy', function(d, i){
+            return scale.y(d.y1);
+          }).attr('r', r).attr('fill', tint.get(d.color)).attr('stroke', tint.get(d.color)).transition(150).attr('opacity', 1);
+        });
+        this.legend.render();
+        this.xaxis.render();
+        return this.yaxis.render();
+      }
+    };
+  };
+  return blockFactory;
+});
+function import$(obj, src){
+  var own = {}.hasOwnProperty;
+  for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+  return obj;
+}</script></div>

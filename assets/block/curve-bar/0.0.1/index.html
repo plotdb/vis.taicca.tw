@@ -1,0 +1,149 @@
+<div><div plug="layout"><div class="pdl-layout"><div data-type="layout"><div class="pdl-cell" data-name="view"></div><div class="pdl-cell" data-name="legend"></div></div><div data-type="render"></div></div></div><style type="text/css">.pdl-layout > div[data-type=layout] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.pdl-layout > div[data-type=layout] [data-name=view] {
+  height: 100%;
+  margin-right: 1em;
+}
+</style><script type="@plotdb/block">(function(it){
+  return it();
+})(function(){
+  var blockFactory, mod;
+  blockFactory = {
+    pkg: {
+      name: 'curve-bar',
+      version: '0.0.1',
+      extend: {
+        name: "base",
+        version: "0.0.1"
+      },
+      dependencies: []
+    },
+    init: function(arg$){
+      var root, context, pubsub;
+      root = arg$.root, context = arg$.context, pubsub = arg$.pubsub;
+      return pubsub.fire('init', {
+        mod: mod({
+          context: context
+        })
+      });
+    }
+  };
+  mod = function(arg$){
+    var context, d3, legend, chart;
+    context = arg$.context;
+    d3 = context.d3, legend = context.legend, chart = context.chart;
+    return {
+      sample: function(){
+        return {
+          raw: [1, 2, 3, 4, 5].map(function(val){
+            return {
+              val: Math.random(),
+              name: val
+            };
+          }),
+          binding: {
+            name: {
+              key: 'name'
+            },
+            value: {
+              key: 'val'
+            }
+          }
+        };
+      },
+      meta: {},
+      config: {},
+      dimension: {
+        value: {
+          type: 'R',
+          name: "value"
+        },
+        name: {
+          type: 'N',
+          name: "name"
+        }
+      },
+      init: function(){
+        var tint;
+        this.gview = d3.select(this.layout.getGroup('view'));
+        this.g = this.gview.append('g');
+        this.tint = tint = new chart.utils.tint();
+        this.arc = d3.arc().innerRadius(0).outerRadius(100).startAngle(0).endAngle(Math.PI / 2);
+        return this.legend = new chart.utils.legend({
+          root: this.root,
+          name: 'legend',
+          shape: function(d){
+            return d3.select(this).attr('fill', tint.get(d.text));
+          },
+          layout: this.layout
+        });
+      },
+      parse: function(){
+        this.tint.reset();
+        this.extent = {
+          v: d3.extent(this.data.map(function(it){
+            return it.value;
+          }))
+        };
+        this.data.sort(function(a, b){
+          return a.value - b.value;
+        });
+        return this.legend.data(this.data.map(function(it){
+          return {
+            key: it.name,
+            text: it.name
+          };
+        }));
+      },
+      resize: function(){
+        var box, ref$, w, h, size;
+        box = this.layout.getBox('view');
+        this.layout.getNode('view').style.width = box.height + "px";
+        this.layout.update(false);
+        ref$ = [box.width, box.height], w = ref$[0], h = ref$[1];
+        size = Math.min(w, h);
+        return this.scale = {
+          v: d3.scaleLinear().domain([0, this.extent.v[1]]).range([0, Math.PI * 3 / 2]),
+          r: d3.scaleBand().domain(this.data.map(function(d, i){
+            return i;
+          })).range([24, size / 2])
+        };
+      },
+      render: function(){
+        var scale, bw, box, x$, y$, this$ = this;
+        scale = this.scale;
+        bw = this.scale.r.bandwidth();
+        this.arc.cornerRadius(bw / 2);
+        if (this.cfg != null && this.cfg.pal) {
+          this.tint.set(this.cfg.pal.colors.map(function(it){
+            return it.value || it;
+          }));
+        }
+        this.legend.render();
+        box = this.layout.getBox('view');
+        this.g.attr('transform', "translate(" + box.width / 2 + "," + box.height / 2 + ")");
+        x$ = this.g.selectAll('path.data').data(this.data);
+        x$.exit().remove();
+        x$.enter().append('path').attr('class', 'data');
+        this.g.selectAll('path.data').attr('d', function(d, i){
+          this$.arc.startAngle(0).endAngle(scale.v(d.value)).innerRadius(scale.r(i)).outerRadius(scale.r(i) + bw - 2);
+          return this$.arc();
+        }).attr('fill', function(d, i){
+          return this$.tint.get(d.name) || d._idx;
+        });
+        y$ = this.g.selectAll('text.label').data(this.data);
+        y$.exit().remove();
+        y$.enter().append('text').attr('class', 'label');
+        return this.g.selectAll('text.label').attr('dominant-baseline', 'center').attr('text-anchor', 'end').attr('x', '-.5em').attr('y', function(d, i){
+          return -scale.r(i);
+        }).attr('dy', -bw * 1 / 4).text(function(d, i){
+          return d.name;
+        });
+      }
+    };
+  };
+  return blockFactory;
+});</script></div>

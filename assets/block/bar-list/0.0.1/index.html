@@ -1,0 +1,232 @@
+<div><div plug="layout"><div class="pdl-layout"><div data-type="layout"></div><div data-type="render"><div class="d-flex"><div class="flex-grow-1"><div class="data" ld-each="data"><div ld="name"></div><div ld="bar"></div></div></div><div style="position:sticky;margin-left:1em;margin-right:.25em;cursor:pointer;white-space:nowrap;top:0;right:0;align-self:flex-start;height:auto;"><div ld="select" data-name="all">全選</div><div ld="select" data-name="none">全不選</div></div></div></div></div></div><style type="text/css">.data {
+  padding-bottom: 1em;
+}
+.pdl-layout {
+  overflow-y: scroll;
+  user-select: none;
+}
+.pdl-layout [data-type=render] {
+  overflow-y: visible;
+  height: auto;
+}
+.pdl-layout .data {
+  cursor: pointer;
+}
+.pdl-layout div[ld=bar] {
+  height: 0.5em;
+  border-radius: 2px;
+}
+</style><script type="@plotdb/block">(function(it){
+  return it();
+})(function(){
+  var blockFactory, mod;
+  blockFactory = {
+    pkg: {
+      name: 'bar-list',
+      version: '0.0.1',
+      extend: {
+        name: "base",
+        version: "0.0.1"
+      },
+      dependencies: [{
+        url: "/assets/lib/ldview/main/index.min.js"
+      }]
+    },
+    init: function(arg$){
+      var root, context, t, pubsub;
+      root = arg$.root, context = arg$.context, t = arg$.t, pubsub = arg$.pubsub;
+      return pubsub.fire('init', {
+        mod: mod({
+          root: root,
+          context: context,
+          t: t
+        }),
+        prepareSvg: false,
+        layout: false,
+        dataAccessor: function(it){
+          return it._data._raw;
+        }
+      });
+    }
+  };
+  mod = function(arg$){
+    var root, context, t, chart, d3, debounce;
+    root = arg$.root, context = arg$.context, t = arg$.t;
+    chart = context.chart, d3 = context.d3, debounce = context.debounce;
+    return {
+      sample: function(){
+        return {
+          raw: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function(it){
+            return {
+              name: it,
+              value: (Math.random() * 100).toFixed(2)
+            };
+          }),
+          binding: {
+            size: {
+              key: "value"
+            },
+            name: {
+              key: "name"
+            }
+          }
+        };
+      },
+      meta: {},
+      config: {},
+      dimension: {
+        size: {
+          type: 'R',
+          name: "size"
+        },
+        name: {
+          type: 'NO',
+          name: "name"
+        }
+      },
+      init: function(){
+        var tint, scale, getList, this$ = this;
+        this.picked = {};
+        this.tint = tint = new chart.utils.tint();
+        this.scale = scale = {};
+        this.extent = {};
+        getList = function(){
+          var k, v;
+          return (function(){
+            var ref$, results$ = [];
+            for (k in ref$ = this.picked) {
+              v = ref$[k];
+              results$.push([k, v]);
+            }
+            return results$;
+          }.call(this$)).filter(function(it){
+            return !it[1];
+          }).map(function(it){
+            return it[0];
+          });
+        };
+        return this.view = new ldview({
+          root: root,
+          initRender: false,
+          action: {
+            click: {
+              select: function(arg$){
+                var views, node, name;
+                views = arg$.views, node = arg$.node;
+                name = node.getAttribute('data-name');
+                if (name === 'none') {
+                  this$.parsed.map(function(it){
+                    return this$.picked[it.name] = false;
+                  });
+                } else {
+                  this$.picked = {};
+                }
+                this$.filter({
+                  name: {
+                    type: 'exclude',
+                    value: getList()
+                  }
+                }, true);
+                return views[0].render('data');
+              }
+            }
+          },
+          handler: {
+            data: {
+              list: function(){
+                return this$.parsed;
+              },
+              key: function(it){
+                return it._idx;
+              },
+              action: {
+                click: function(arg$){
+                  var views, node, data;
+                  views = arg$.views, node = arg$.node, data = arg$.data;
+                  this$.picked[data.name] = this$.picked[data.name] != null ? !this$.picked[data.name] : false;
+                  views[0].render('data', data._idx);
+                  return this$.filter({
+                    name: {
+                      type: 'exclude',
+                      value: getList()
+                    }
+                  }, true);
+                }
+              },
+              handler: function(arg$){
+                var node, data, nn, nb, unit, ref$;
+                node = arg$.node, data = arg$.data;
+                nn = node.querySelector('[ld=name]');
+                nb = node.querySelector('[ld=bar]');
+                unit = ((ref$ = this$.binding).size || (ref$.size = {})).unit || '';
+                nn.textContent = data.name + " / " + data.size + unit;
+                ref$ = nb.style;
+                ref$.width = this$.scale.x(data.size) + "%";
+                ref$.background = this$.tint.get('size');
+                return node.style.opacity = this$.picked[data.name] === false ? 0.3 : 1;
+              }
+            }
+          }
+        });
+      },
+      filter: function(filters, internal){
+        internal == null && (internal = false);
+      },
+      parse: function(){
+        var names, k, this$ = this;
+        this.parsed = this.data.map(function(it){
+          return it;
+        });
+        names = this.parsed.map(function(it){
+          return it.name;
+        });
+        this.parsed = this.parsed.concat((function(){
+          var results$ = [];
+          for (k in this.picked) {
+            results$.push(k);
+          }
+          return results$;
+        }.call(this)).filter(function(it){
+          return !in$(it, names);
+        }).map(function(it){
+          return {
+            name: it,
+            size: 0
+          };
+        }));
+        this.parsed.sort(function(a, b){
+          var pb, pa, that;
+          pb = !(this$.picked[b.name] != null) || this$.picked[b.name];
+          pa = !(this$.picked[a.name] != null) || this$.picked[a.name];
+          if (pb && !pa) {
+            return 1;
+          } else if (!pb && pa) {
+            return -1;
+          }
+          if (that = b.size - a.size) {
+            return that;
+          }
+          return 0;
+        });
+        return this.parsed.map(function(d, i){
+          return d._idx = i;
+        });
+      },
+      resize: function(){
+        this.extent = d3.extent(this.parsed.map(function(it){
+          return it.size;
+        }));
+        return this.scale.x = d3.scaleLinear().domain([0, this.extent[1]]).range([0, 100]);
+      },
+      render: function(){
+        return this.view.render();
+      }
+    };
+  };
+  return blockFactory;
+});
+function in$(x, xs){
+  var i = -1, l = xs.length >>> 0;
+  while (++i < l) if (x === xs[i]) return true;
+  return false;
+}</script></div>

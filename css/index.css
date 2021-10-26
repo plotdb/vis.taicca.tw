@@ -1,0 +1,51 @@
+@font-face {
+  font-family: 'ldi';
+  font-weight: normal;
+  font-style: normal;
+  src: url("/assets/lib/ldiconfont/main/ldif.ttf") format('truetype');
+}
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+body {
+  color: #838c9b;
+  background-color: #0b0f18;
+  background-image: url("/assets/img/fluid.svg");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+input.form-control {
+  background-color: rgba(255,255,255,0.1);
+}
+.btn-text {
+  color: #838c9b;
+}
+.btn-text:hover {
+  color: #d9e4f2;
+}
+.text-hl {
+  color: #d9e4f2;
+  font-weight: bold;
+}
+.card.card-choice {
+  cursor: pointer;
+}
+.card.card-choice.active {
+  border: 1px solid #ff3a1e;
+  color: #ff3a1e;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+::-webkit-scrollbar {
+  width: 0.6em;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.9);
+  border-radius: 0.15em;
+}
+::-webkit-scrollbar-track {
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 0.15em;
+}

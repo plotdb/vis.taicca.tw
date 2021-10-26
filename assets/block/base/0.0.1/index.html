@@ -1,0 +1,193 @@
+<div class="base" style="width:100%;height:100%"><plug name="layout"></plug><style type="text/css">*[plug=layout] {
+  fill: currentColor;
+}
+</style><script type="@plotdb/block">({
+  pkg: {
+    name: 'base',
+    version: '0.0.1',
+    dependencies: [
+      {
+        name: "d3",
+        version: "4",
+        async: false
+      }, {
+        name: "d3-selection",
+        version: "2",
+        async: false
+      }, {
+        name: "d3-random",
+        version: "2"
+      }, {
+        name: "d3-dispatch",
+        version: "2",
+        async: false
+      }, {
+        name: "d3-transition",
+        version: "2"
+      }, {
+        name: "d3-format",
+        version: "2"
+      }, {
+        name: "d3-array",
+        version: "2",
+        async: false
+      }, {
+        name: "d3-color",
+        version: "2"
+      }, {
+        name: "d3-path",
+        version: "2"
+      }, {
+        name: "d3-shape",
+        version: "2"
+      }, {
+        name: "d3-interpolate",
+        version: "2",
+        async: false
+      }, {
+        name: "d3-scale-chromatic",
+        version: "1"
+      }, {
+        name: "d3-ease",
+        version: "2"
+      }, {
+        name: "d3-quadtree",
+        version: "2"
+      }, {
+        name: "d3-timer",
+        version: "2"
+      }, {
+        name: "d3-force",
+        version: "2",
+        async: false
+      }, {
+        name: "d3-hierarchy",
+        version: "2"
+      }, {
+        name: "d3-force-boundary",
+        version: "0.0.1"
+      }, {
+        name: "d3-drag",
+        version: "2"
+      }, {
+        name: "d3-brush",
+        version: "2"
+      }, {
+        name: "d3-axis",
+        version: "2"
+      }, {
+        name: "@loadingio/debounce.js",
+        version: "main",
+        path: "debounce.min.js"
+      }, {
+        name: "wrap-svg-text",
+        version: "main",
+        path: "index.min.js",
+        async: false
+      }, {
+        name: "@plotdb/layout",
+        version: "main",
+        path: "index.min.js",
+        async: false
+      }, {
+        name: "@plotdb/layout",
+        version: "main",
+        path: "index.min.css",
+        type: 'css'
+      }, {
+        name: "ldcolor",
+        version: "main",
+        path: "ldcolor.min.js",
+        async: false
+      }, {
+        name: "@plotdb/chart",
+        version: "main",
+        path: "chart.js",
+        async: false
+      }, {
+        name: "@plotdb/chart",
+        version: "main",
+        path: "chart.min.css",
+        type: 'css'
+      }, {
+        name: "@plotdb/chart",
+        version: "main",
+        path: "utils/legend.js"
+      }, {
+        name: "@plotdb/chart",
+        version: "main",
+        path: "utils/legend.css",
+        type: 'css'
+      }, {
+        name: "@plotdb/chart",
+        version: "main",
+        path: "utils/tint.js"
+      }, {
+        name: "@plotdb/chart",
+        version: "main",
+        path: "utils/format.js",
+        async: false
+      }, {
+        name: "@plotdb/chart",
+        version: "main",
+        path: "utils/axis.js"
+      }, {
+        name: "@plotdb/chart",
+        version: "main",
+        path: "utils/tip.js"
+      }
+    ],
+    i18n: {
+      "zh-TW": {
+        "x axis": "X軸",
+        name: "名稱"
+      }
+    }
+  },
+  init: function(arg$){
+    var root, context, pubsub, data, d3, chart, this$ = this;
+    root = arg$.root, context = arg$.context, pubsub = arg$.pubsub, data = arg$.data;
+    d3 = context.d3, chart = context.chart;
+    pubsub.on('init', function(opt){
+      var originalInit, c;
+      opt == null && (opt = {});
+      opt = import$({
+        root: root,
+        delayRender: true,
+        autoSelect: true,
+        dataAccessor: function(it){
+          return d3.select(it).datum()._raw;
+        }
+      }, opt);
+      originalInit = opt.mod.init;
+      opt.mod.init = function(){
+        var ret;
+        this.random = d3.randomUniform.source(d3.randomLcg(123))(0, 1);
+        ret = originalInit.apply(this);
+        return Promise.resolve();
+      };
+      this$.chart = c = new chart(import$(opt, data));
+      return c.init().then(function(){
+        return c;
+      });
+    });
+    return this;
+  },
+  'interface': function(){
+    return this.chart;
+  },
+  mod: function(root){
+    return {
+      config: {},
+      dimension: {},
+      init: function(){},
+      resize: function(){},
+      render: function(){}
+    };
+  }
+});
+function import$(obj, src){
+  var own = {}.hasOwnProperty;
+  for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+  return obj;
+}</script></div>

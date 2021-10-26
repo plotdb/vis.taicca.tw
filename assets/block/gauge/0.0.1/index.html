@@ -1,0 +1,151 @@
+<div><div plug="layout"><div class="pdl-layout"><div data-type="layout"><div class="pdl-cell" data-name="view"></div><div class="text"><div class="pdl-cell" data-name="number">0000</div><div class="pdl-cell" data-name="unit">0000</div></div></div><div data-type="render"></div></div></div><style type="text/css">.pdl-layout > div[data-type=layout] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.pdl-layout > div[data-type=layout] .text {
+  margin-left: 0.5em;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+}
+.pdl-layout > div[data-type=layout] [data-name=view] {
+  height: 100%;
+}
+.pdl-layout > div[data-type=layout] [data-name=number] {
+  font-size: 24px;
+  line-height: 1em;
+}
+.pdl-layout > div[data-type=layout] [data-name=unit] {
+  line-height: 1em;
+}
+</style><script type="@plotdb/block">(function(it){
+  return it();
+})(function(){
+  var blockFactory, mod;
+  blockFactory = {
+    pkg: {
+      name: 'gauge',
+      version: '0.0.1',
+      extend: {
+        name: "base",
+        version: "0.0.1"
+      },
+      dependencies: []
+    },
+    init: function(arg$){
+      var root, context, pubsub;
+      root = arg$.root, context = arg$.context, pubsub = arg$.pubsub;
+      return pubsub.fire('init', {
+        mod: mod({
+          context: context
+        })
+      });
+    }
+  };
+  mod = function(arg$){
+    var context, d3, chart;
+    context = arg$.context;
+    d3 = context.d3, chart = context.chart;
+    return {
+      sample: function(){
+        return {
+          raw: [{
+            value: Math.random(),
+            max: 1
+          }],
+          binding: {
+            value: {
+              key: 'value'
+            },
+            max: {
+              key: 'max'
+            }
+          }
+        };
+      },
+      meta: {},
+      config: {},
+      dimension: {
+        value: {
+          type: 'R',
+          name: "value"
+        },
+        max: {
+          type: 'R',
+          name: "max"
+        }
+      },
+      init: function(){
+        var tint;
+        this.tint = tint = new chart.utils.tint();
+        this.arc = d3.arc();
+        return this.g = {
+          view: d3.select(this.layout.getGroup('view')),
+          number: d3.select(this.layout.getGroup('number')),
+          unit: d3.select(this.layout.getGroup('unit'))
+        };
+      },
+      parse: function(){
+        var x$, y$, z$, z1$, z2$;
+        x$ = this.g.view.selectAll('path.wedge').data([0, 1]);
+        x$.exit().remove();
+        x$.enter().append('path').attr('class', 'wedge');
+        y$ = this.g.view.selectAll('path.pin').data([0]);
+        y$.exit().remove();
+        y$.enter().append('path').attr('class', 'pin');
+        z$ = this.g.view.selectAll('citcle').data([0]);
+        z$.exit().remove();
+        z$.enter().append('circle');
+        z1$ = this.g.number.selectAll('text').data([0]);
+        z1$.exit().remove();
+        z1$.enter().append('text');
+        z2$ = this.g.unit.selectAll('text').data([0]);
+        z2$.exit().remove();
+        z2$.enter().append('text');
+        return z2$;
+      },
+      resize: function(){
+        var n, b, x$;
+        n = this.layout.getNode('view');
+        b = this.layout.getBox('view');
+        x$ = n.style;
+        x$.width = b.height + "px";
+        return this.layout.update(false);
+      },
+      render: function(){
+        var d, percent, ref$, ref1$, angle, start, end, box, size, offset, this$ = this;
+        if (this.cfg != null && this.cfg.pal) {
+          this.tint.set(this.cfg.pal.colors.map(function(it){
+            return it.value || it;
+          }));
+        }
+        d = this.data[0] || {};
+        percent = (ref$ = (ref1$ = (d.value || 0) / (d.max || 1)) < 1 ? ref1$ : 1) > 0 ? ref$ : 0;
+        angle = percent * (Math.PI * 6 / 4) + Math.PI / 4;
+        start = Math.PI / 4;
+        end = Math.PI * 7 / 4;
+        box = this.layout.getBox('view');
+        size = Math.min(box.width, box.height) / 2;
+        this.arc.innerRadius(size * 0.5).outerRadius(size);
+        offset = size * (1 - 1 / Math.sqrt(2)) / 2;
+        this.g.view.selectAll('path.wedge').attr('transform', "translate(" + box.width / 2 + "," + (offset + box.height / 2) + ") rotate(180)").attr('d', function(d, i){
+          this$.arc.startAngle(i === 0 ? start : angle).endAngle(i === 0 ? angle : end);
+          return this$.arc();
+        }).attr('fill', function(d, i){
+          return this$.tint.get(d);
+        });
+        this.g.view.selectAll('path.pin').attr('transform', "translate(" + box.width / 2 + " " + (offset + box.height / 2) + ") rotate(" + (45 + 270 * percent) + ")").attr('d', "M0 " + size * 0.4 + "L0 " + size).attr('fill', 'none').attr('stroke', '#000').attr('stroke-width', 2);
+        this.g.number.selectAll('text').text(function(){
+          return 3000;
+        }).attr('font-size', 24).attr('dominant-baseline', 'hanging');
+        return this.g.unit.selectAll('text').text(function(){
+          return "新臺幣";
+        }).attr('dominant-baseline', 'hanging');
+      }
+    };
+  };
+  return blockFactory;
+});</script></div>

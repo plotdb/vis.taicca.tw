@@ -1,0 +1,104 @@
+<div><div plug="layout"></div><style type="text/css"></style><script type="@plotdb/block">(function(it){
+  return it();
+})(function(){
+  var blockFactory, mod;
+  blockFactory = {
+    pkg: {
+      name: 'bar',
+      version: '0.0.1',
+      extend: {
+        name: "base",
+        version: "0.0.1"
+      },
+      dependencies: [
+        {
+          url: "/assets/lib/@plotdb/sheet/main/index.min.js"
+        }, {
+          url: "/assets/lib/@plotdb/sheet/main/index.min.css"
+        }
+      ]
+    },
+    init: function(arg$){
+      var root, context, t, pubsub;
+      root = arg$.root, context = arg$.context, t = arg$.t, pubsub = arg$.pubsub;
+      return pubsub.fire('init', {
+        mod: mod({
+          context: context,
+          t: t
+        }),
+        prepareSvg: false,
+        layout: false
+      });
+    }
+  };
+  mod = function(arg$){
+    var context, t, chart, sheet;
+    context = arg$.context, t = arg$.t;
+    chart = context.chart, sheet = context.sheet;
+    return {
+      sample: function(){
+        return {
+          raw: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map(function(val){
+            return Object.fromEntries([1, 2, 3, 4, 5].map(function(it){
+              return ["col" + it, (Math.random() * 100).toFixed(2)];
+            }));
+          }),
+          binding: {
+            column: [1, 2, 3, 4, 5].map(function(it){
+              return {
+                key: "col" + it
+              };
+            })
+          }
+        };
+      },
+      meta: {},
+      config: {},
+      dimension: {
+        column: {
+          type: 'NCOR',
+          multiple: true,
+          name: 'column'
+        }
+      },
+      init: function(){
+        var this$ = this;
+        this.sheet = new sheet({
+          root: this.root.querySelector('[plug=layout]'),
+          frozen: {
+            row: 1
+          },
+          editing: false,
+          idx: {
+            row: true,
+            col: true
+          }
+        });
+        this.data = [this.binding.column.map(function(it){
+          return it.name || it.key;
+        })].concat(this.raw.map(function(r){
+          return this$.binding.column.map(function(c){
+            return r[c.key];
+          });
+        }));
+        return this.sheet.data(this.data);
+      },
+      filter: function(filters, internal){
+        internal == null && (internal = false);
+      },
+      parse: function(){
+        var head;
+        head = this.binding.column.map(function(it){
+          return it.name || it.key;
+        });
+        this.parsed = [head].concat(this.data.map(function(it){
+          return it.column;
+        }));
+        return this.sheet.data(this.parsed);
+      },
+      resize: function(){},
+      render: function(){}
+    };
+  };
+  return blockFactory;
+});</script></div>

@@ -1,0 +1,576 @@
+<div><div plug="layout"><div class="pdl-layout"><div data-type="layout"><div class="pdl-cell" data-name="yaxis">&nbsp;</div><div class="pdl-cell" data-name="view"></div><div class="pdl-cell"></div><div class="pdl-cell" data-name="xaxis">&nbsp;</div><div class="pdl-cell" data-name="legend">&nbsp;</div></div><div data-type="render"></div></div></div><style type="text/css">[data-name=xaxis] {
+  font-size: 0.8em;
+}
+[data-name=yaxis] {
+  font-size: 0.8em;
+}
+.pdl-layout > div[data-type=layout] {
+  display: grid;
+  grid-template-columns: fit-content(2em) 1fr fit-content(10em);
+  grid-template-rows: 1fr fit-content(1em);
+/* 0.5em for axis label at the boundary */
+  padding: 0 0.5em;
+}
+.pdl-layout > div[data-type=layout] > .pdl-cell[data-name=legend] {
+  grid-column: 3;
+  grid-row: 1/span 2;
+  padding-left: 1em;
+}
+.pdl-layout.legend-below > div[data-type=layout] {
+  grid-template-columns: 2em 1fr;
+  grid-template-rows: 1fr fit-content(2em) fit-content(3em);
+}
+.pdl-layout.legend-below > div[data-type=layout] .pdl-cell[data-name=legend] {
+  padding-top: 1em;
+  grid-column: 1/span 2;
+  grid-row: 3;
+}
+</style><script type="@plotdb/block">(function(it){
+  return it();
+})(function(){
+  var blockFactory, mod;
+  blockFactory = {
+    pkg: {
+      name: 'bar',
+      version: '0.0.1',
+      extend: {
+        name: "base",
+        version: "0.0.1"
+      },
+      dependencies: [],
+      i18n: {
+        "zh-TW": {
+          "size": "長度"
+        }
+      }
+    },
+    init: function(arg$){
+      var root, context, t, pubsub;
+      root = arg$.root, context = arg$.context, t = arg$.t, pubsub = arg$.pubsub;
+      return pubsub.fire('init', {
+        mod: mod({
+          context: context,
+          t: t
+        })
+      });
+    }
+  };
+  mod = function(arg$){
+    var context, t, chart, d3, debounce;
+    context = arg$.context, t = arg$.t;
+    chart = context.chart, d3 = context.d3, debounce = context.debounce;
+    return {
+      sample: function(){
+        return {
+          raw: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function(val){
+            var ret, i$, i;
+            ret = {
+              name: val
+            };
+            for (i$ = 1; i$ <= 4; ++i$) {
+              i = i$;
+              ret["val" + i] = Math.random();
+            }
+            return ret;
+          }),
+          binding: {
+            size: [1, 2, 3, 4].map(function(it){
+              return {
+                key: "val" + it,
+                unit: "amount"
+              };
+            }),
+            name: {
+              key: "name"
+            }
+          }
+        };
+      },
+      config: {
+        sort: {
+          enabled: {
+            type: 'boolean'
+          },
+          dir: {
+            type: 'choice',
+            values: ['asc', 'desc', 'none']
+          }
+        },
+        type: {
+          type: 'choice',
+          values: ['bar', 'column'],
+          'default': 'column'
+        }
+      },
+      dimension: {
+        size: {
+          type: 'R',
+          multiple: true,
+          name: "size"
+        },
+        name: {
+          type: 'NO',
+          name: "name"
+        }
+      },
+      init: function(){
+        var tint, brush, scale, this$ = this;
+        this.tint = tint = new chart.utils.tint();
+        [['multiple', 'stack'], ['percent', false], ['dancing', true]].map(function(arg$){
+          var k, v;
+          k = arg$[0], v = arg$[1];
+          if (!(this$.cfg[k] != null)) {
+            return this$.cfg[k] = v;
+          }
+        });
+        this.svg.addEventListener('click', function(){
+          if (!this$.cfg.dancing || this$.cfg.percent) {
+            return;
+          }
+          this$.alignIdx = ((this$.alignIdx || 0) + 1) % (this$.binding.size.length + 1);
+          this$.resize();
+          return this$.render();
+        });
+        this.brush = d3.brushX();
+        this.g = Object.fromEntries(['view', 'xaxis', 'yaxis', 'legend'].map(function(it){
+          return [it, d3.select(this$.layout.getGroup(it))];
+        }));
+        this.range = "null";
+        brush = debounce(150, function(e){
+          var ref$, range, _range, domain, bandwidth;
+          if (((ref$ = this$.cfg).brush || (ref$.brush = {})).enabled != null && !this$.cfg.brush.enabled) {
+            return;
+          }
+          range = e.selection;
+          if ((_range = JSON.stringify(range)) === this$.range) {
+            return;
+          } else {
+            this$.range = _range;
+          }
+          if (!range) {
+            return this$.filter({
+              name: undefined
+            }, true);
+          } else {
+            domain = this$.scale.x.domain();
+            bandwidth = this$.scale.x.bandwidth();
+            range = range.map(function(it){
+              var ref$, ref1$, ref2$;
+              return (ref$ = (ref2$ = Math.floor(it / bandwidth)) > 0 ? ref2$ : 0) < (ref1$ = domain.length - 1) ? ref$ : ref1$;
+            });
+            range = (function(){
+              var i$, to$, results$ = [];
+              for (i$ = range[0], to$ = range[1]; i$ <= to$; ++i$) {
+                results$.push(i$);
+              }
+              return results$;
+            }()).map(function(it){
+              return domain[it];
+            });
+            return this$.filter({
+              name: {
+                type: 'index',
+                value: range
+              }
+            }, true);
+          }
+        });
+        this.brush.on('end', brush);
+        this.brush.on('brush', brush);
+        this.scale = scale = {};
+        this.yaxis = new chart.utils.axis({
+          layout: this.layout,
+          name: 'yaxis',
+          direction: 'left'
+        });
+        this.xaxis = new chart.utils.axis({
+          layout: this.layout,
+          name: 'xaxis',
+          direction: 'bottom'
+        });
+        return this.legend = new chart.utils.legend({
+          layout: this.layout,
+          name: 'legend',
+          root: this.root,
+          shape: function(d){
+            return d3.select(this).attr('fill', tint.get(d.key));
+          }
+        });
+      },
+      destroy: function(){
+        if (this.tip) {
+          return this.tip.destroy();
+        }
+      },
+      filter: function(filters, internal){
+        var this$ = this;
+        internal == null && (internal = false);
+        this.render();
+        if (internal) {
+          return;
+        }
+        return this.brush.move(this.g.view, filters.name ? filters.name.map(function(it){
+          return this$.scale.x(it);
+        }) : null);
+      },
+      parse: function(){
+        this.data.map(function(d){
+          return d.size = d.size.map(function(it){
+            if (isNaN(it)) {
+              return 0;
+            } else {
+              return it;
+            }
+          });
+        });
+        return this.alignIdx = undefined;
+      },
+      resize: function(){
+        var alignIdx, ref$, ref1$, delta, max, i, box, maxTick, yticks, v, xticks, i$, w, h, r, this$ = this;
+        this.type = this.cfg.type || 'column';
+        this.legend.config(this.cfg.legend);
+        this.legend.update();
+        this.layout.update(false);
+        this.maxPerGroup = this.binding.size.map(function(d, i){
+          return Math.max.apply(Math, this$.data.map(function(it){
+            return it.size[i];
+          }));
+        });
+        if (this.cfg.alignIdx && !this.alignIdx) {
+          this.alignIdx = this.cfg.alignIdx;
+        }
+        alignIdx = (ref$ = this.cfg.percent
+          ? 0
+          : this.alignIdx || 0) < (ref1$ = this.binding.size.length) ? ref$ : ref1$;
+        this.baseOffset = this.data.map(function(d){
+          return (function(){
+            var i$, to$, results$ = [];
+            for (i$ = 0, to$ = alignIdx; i$ < to$; ++i$) {
+              results$.push(i$);
+            }
+            return results$;
+          }()).reduce(function(a, b){
+            return a + d.size[b];
+          }, 0) || 0;
+        });
+        this.delta = delta = Math.max.apply(Math, this.baseOffset);
+        if (this.cfg.multiple === 'stack') {
+          if (this.cfg.percent) {
+            max = 1;
+          } else {
+            max = Math.max.apply(Math, this.data.map(function(d){
+              return (function(){
+                var i$, to$, results$ = [];
+                for (i$ = alignIdx, to$ = d.size.length; i$ < to$; ++i$) {
+                  results$.push(i$);
+                }
+                return results$;
+              }()).reduce(function(a, b){
+                return a + d.size[b];
+              }, 0);
+            })) + (delta || 0);
+          }
+        } else if (this.cfg.multiple === 'group') {
+          max = Math.max.apply(Math, this.data.map(function(d){
+            return Math.max.apply(Math, d.size);
+          }));
+        } else if (this.cfg.multiple === 'split') {
+          max = this.maxPerGroup.reduce(function(a, b){
+            return a + b;
+          }, 0);
+        }
+        this.order = this.data.map(function(d, i){
+          return {
+            key: d._idx,
+            idx: i,
+            name: d.name
+          };
+        });
+        this.data.map(function(d, i){
+          return d.sum = d.size.reduce(function(a, b){
+            return a + b;
+          }, 0);
+        });
+        if (((ref$ = this.cfg).sort || (ref$.sort = {})).enabled) {
+          this.order.sort(function(a, b){
+            return (this$.cfg.sort.dir === 'asc'
+              ? 1
+              : -1) * (this$.data[a.idx].sum - this$.data[b.idx].sum);
+          });
+        }
+        if (this.cfg.pal) {
+          this.tint.set(this.cfg.pal.colors.map(function(it){
+            return it.value || it;
+          }));
+        }
+        this.legend.data((function(){
+          var i$, results$ = [];
+          for (i$ = this.binding.size.length - 1; i$ >= 0; --i$) {
+            i = i$;
+            results$.push({
+              key: i,
+              text: this.binding.size[i].name || this.binding.size[i].key
+            });
+          }
+          return results$;
+        }.call(this)));
+        this.layout.update(false);
+        box = this.layout.getBox('view');
+        if (this.type === 'column') {
+          ref$ = this.scale;
+          ref$.y = d3.scaleLinear().domain([0, max]).range([box.height, 0]);
+          ref$.x = d3.scaleBand().domain(this.order.map(function(it){
+            return it.name || it.key;
+          })).range([0, box.width]);
+          maxTick = (ref$ = Math.ceil(this.layout.getBox('yaxis').height / 40)) > 2 ? ref$ : 2;
+          yticks = this.cfg.bump
+            ? (function(){
+              var i$, to$, ref$, results$ = [];
+              for (i$ = 1, to$ = (ref$ = this.parsed.length || 1) > 1 ? ref$ : 1; i$ <= to$; ++i$) {
+                results$.push(i$);
+              }
+              return results$;
+            }.call(this))
+            : this.scale.y.ticks((ref$ = ((ref1$ = this.cfg).yaxis || (ref1$.yaxis = {})).tickCount || 4) < maxTick ? ref$ : maxTick);
+          this.yaxis.config(this.cfg.yaxis);
+          v = this.binding.size[0] || {};
+          if (this.binding.size.length > 1) {
+            this.yaxis.caption(v.unit ? v.unit + "" : '');
+          } else {
+            this.yaxis.caption((v.name || v.key || '') + (v.unit ? "(" + v.unit + ")" : ''));
+          }
+          this.yaxis.ticks(yticks);
+          this.yaxis.scale(this.scale.y);
+          this.xaxis.config((ref$ = this.cfg).xaxis || (ref$.xaxis = {}));
+          this.xaxis.ticks(this.data.map(function(it){
+            return it.name;
+          }));
+          this.xaxis.scale(this.scale.x);
+          this.xaxis.caption((this.binding.name.name || this.binding.name.key) + (this.binding.name.unit ? "(" + this.binding.name.unit + ")" : ''));
+        } else {
+          ref$ = this.scale;
+          ref$.x = d3.scaleLinear().domain([0, max]).range([box.width, 0]);
+          ref$.y = d3.scaleBand().domain(this.order.map(function(it){
+            return it.name || it.key;
+          })).range([0, box.height]);
+          maxTick = (ref$ = Math.ceil(this.layout.getBox('xaxis').width / 80)) > 2 ? ref$ : 2;
+          xticks = this.cfg.bump
+            ? (function(){
+              var i$, to$, ref$, results$ = [];
+              for (i$ = 1, to$ = (ref$ = this.parsed.length || 1) > 1 ? ref$ : 1; i$ <= to$; ++i$) {
+                results$.push(i$);
+              }
+              return results$;
+            }.call(this))
+            : this.scale.x.ticks((ref$ = ((ref1$ = this.cfg).xaxis || (ref1$.xaxis = {})).tickCount || 4) < maxTick ? ref$ : maxTick);
+          this.xaxis.config(this.cfg.xaxis);
+          v = this.binding.size[0] || {};
+          if (this.binding.size.length > 1) {
+            this.xaxis.caption(v.unit ? v.unit + "" : '');
+          } else {
+            this.xaxis.caption((v.name || v.key || '') + (v.unit ? "(" + v.unit + ")" : ''));
+          }
+          this.xaxis.ticks(xticks);
+          this.xaxis.scale(this.scale.x);
+          this.yaxis.config((ref$ = this.cfg).yaxis || (ref$.yaxis = {}));
+          this.yaxis.ticks(this.data.map(function(it){
+            return it.name;
+          }));
+          this.yaxis.scale(this.scale.y);
+          this.yaxis.caption((this.binding.name.name || this.binding.name.key) + (this.binding.name.unit ? "(" + this.binding.name.unit + ")" : ''));
+        }
+        for (i$ = 0; i$ < 2; ++i$) {
+          i = i$;
+          this.layout.update(false);
+          box = this.layout.getBox('view');
+          ref$ = [box.width, box.height], w = ref$[0], h = ref$[1];
+          this.tint.set(this.cfg.pal);
+          r = this.cfg.dotSize || 3;
+          this.scale.x.range([0, w - r]);
+          this.scale.y.range([h, r]);
+          this.xaxis.render();
+          this.yaxis.render();
+        }
+        box = this.layout.getBox('view');
+        return this.brush.extent([[0, 1], [box.width, box.height - 1]]);
+      },
+      render: function(){
+        var binding, scale, range, delta, baseOffset, maxPerGroup, cfg, tint, data, type, x$, ref$, this$ = this;
+        binding = this.binding, scale = this.scale, range = this.range, delta = this.delta, baseOffset = this.baseOffset, maxPerGroup = this.maxPerGroup, cfg = this.cfg, tint = this.tint, data = this.data, type = this.type;
+        x$ = this.g.view.selectAll('g.bar').data(this.data);
+        x$.exit().remove();
+        x$.enter().append('g').attr('class', 'bar');
+        this.g.view.selectAll('g.bar').attr('transform', function(d, i){
+          if (this$.type === 'column') {
+            return "translate(" + scale.x(d.name) + ",0)";
+          } else {
+            return "translate(0," + scale.y(d.name) + ")";
+          }
+        }).each(function(item, j){
+          var ref$, bars, offset, sum, i$, to$, idx, size, key, x$, y$, tran;
+          ref$ = [[], 0], bars = ref$[0], offset = ref$[1];
+          offset = delta - baseOffset[j];
+          sum = 1;
+          if (cfg.percent === true) {
+            sum = (ref$ = item.size.reduce(function(a, b){
+              return a + b;
+            }, 0)) > 1 ? ref$ : 1;
+          }
+          for (i$ = 0, to$ = item.size.length; i$ < to$; ++i$) {
+            idx = i$;
+            size = item.size[idx];
+            key = idx;
+            bars.push({
+              size: size / sum,
+              offset: offset / sum,
+              key: key,
+              group: item.name,
+              name: binding.size[key].name || binding.size[key].key,
+              unit: binding.size[key].unit || ''
+            });
+            if (cfg.multiple === 'split') {
+              offset += maxPerGroup[idx];
+            } else if (cfg.multiple === 'stack') {
+              offset += size;
+            }
+          }
+          x$ = d3.select(this).selectAll('rect').data(bars, function(d, i){
+            return d.key;
+          });
+          x$.exit().remove();
+          y$ = x$.enter().append('rect');
+          if (type === 'column') {
+            y$.attr('width', function(d, i){
+              return scale.x.bandwidth() - 2;
+            });
+          }
+          if (type === 'column') {
+            y$.attr('y', function(d, i){
+              return scale.y(0);
+            });
+          }
+          if (type !== 'column') {
+            y$.attr('height', function(d, i){
+              return scale.y.bandwidth() - 2;
+            });
+          }
+          if (type !== 'column') {
+            y$.attr('x', function(d, i){
+              return scale.x(0);
+            });
+          }
+          tran = d3.select(this).selectAll('rect').transition().duration(350).call(function(sel){
+            var x$;
+            if (cfg.multiple !== 'group') {
+              return;
+            }
+            x$ = sel;
+            if (type === 'column') {
+              x$.attr('x', function(d, i){
+                return 1 + i * (scale.x.bandwidth() - 2) / bars.length;
+              });
+            }
+            if (type === 'column') {
+              x$.attr('width', function(d, i){
+                return (scale.x.bandwidth() - 2) / bars.length;
+              });
+            }
+            if (type === 'column') {
+              x$.attr('y', function(d, i){
+                return Math.round(Math.min(scale.y(0), scale.y(d.size)));
+              });
+            }
+            if (type !== 'column') {
+              x$.attr('y', function(d, i){
+                return 1 + i * (scale.y.bandwidth() - 2) / bars.length;
+              });
+            }
+            if (type !== 'column') {
+              x$.attr('height', function(d, i){
+                return (scale.y.bandwidth() - 2) / bars.length;
+              });
+            }
+            if (type !== 'column') {
+              x$.attr('x', function(d, i){
+                return Math.round(Math.min(scale.x(0), scale.x(d.size)));
+              });
+            }
+            return x$;
+          }).call(function(sel){
+            var x$;
+            if (cfg.multiple !== 'stack') {
+              return;
+            }
+            x$ = sel;
+            if (type === 'column') {
+              x$.attr('x', 1);
+            }
+            if (type === 'column') {
+              x$.attr('width', function(d, i){
+                return scale.x.bandwidth() - 2;
+              });
+            }
+            if (type === 'column') {
+              x$.attr('y', function(d, i){
+                return Math.round(Math.min(scale.y(d.offset), scale.y(d.offset + d.size)));
+              });
+            }
+            if (type !== 'column') {
+              x$.attr('y', 1);
+            }
+            if (type !== 'column') {
+              x$.attr('height', function(d, i){
+                return scale.y.bandwidth() - 2;
+              });
+            }
+            if (type !== 'column') {
+              x$.attr('x', function(d, i){
+                return Math.round(Math.min(scale.x(d.offset), scale.x(d.offset + d.size)));
+              });
+            }
+            return x$;
+          });
+          if (type === 'column') {
+            tran.attr('height', function(d, i){
+              return Math.round(Math.abs(scale.y(0) - scale.y(d.size)));
+            });
+          } else {
+            tran.attr('width', function(d, i){
+              return Math.round(Math.abs(scale.x(0) - scale.x(d.size)));
+            });
+          }
+          return tran.attr('fill', function(d, i){
+            return tint.get(i, cfg.colorVariant ? j / data.length - 0.5 : 0);
+          }).attr('fill-opacity', function(d, i){
+            var filter, range;
+            if (!(binding.name && (filter = binding.name.filter))) {
+              return 1;
+            }
+            if (!(range = filter.value)) {
+              return 1;
+            }
+            if (in$(item.name, range)) {
+              return 1;
+            } else {
+              return 0.2;
+            }
+          });
+        });
+        if (!(((ref$ = this.cfg).brush || (ref$.brush = {})).enabled != null && !this.cfg.brush.enabled)) {
+          this.g.view.call(this.brush);
+        }
+        this.g.view.selectAll('rect.selection').attr('shape-rendering', 'auto');
+        this.legend.render();
+        this.yaxis.render();
+        return this.xaxis.render();
+      },
+      tick: function(){}
+    };
+  };
+  return blockFactory;
+});
+function in$(x, xs){
+  var i = -1, l = xs.length >>> 0;
+  while (++i < l) if (x === xs[i]) return true;
+  return false;
+}</script></div>
