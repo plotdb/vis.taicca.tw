@@ -1,0 +1,45 @@
+.page {
+  margin: 2em 0 5em;
+  border-bottom: 1px dashed #eee;
+  padding-bottom: 5em;
+}
+@page {
+  size: A4;
+  margin: 10mm 5mm;
+}
+@media print {
+  html,
+  body {
+    width: 210mm;
+    height: 297mm;
+  }
+  .page {
+    position: relative;
+    page-break-after: always;
+    page-break-before: always;
+    margin: 1em 0 1em;
+    padding: 6mm 15mm;
+    background: #fff;
+    border-bottom: 0;
+  }
+  .page > h3:first-child {
+    margin-top: 0;
+  }
+  .root {
+    width: 100% !important;
+  }
+  .pager {
+    display: block !important;
+    position: absolute;
+    top: 0mm;
+    right: 0mm;
+  }
+  .flow-chart .fn {
+    margin: 1em;
+    padding: 0.5em;
+  }
+  .flow-chart .fa {
+    margin: 1em 0.25m;
+    padding: 1em 0.25em;
+  }
+}
