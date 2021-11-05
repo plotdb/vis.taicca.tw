@@ -84,7 +84,7 @@ Ctrl.prototype = import$(Object.create(Object.prototype), {
         ldcv: function(arg$){
           var node;
           node = arg$.node;
-          return this$.ldcv[node.getAttribute('data-name')] = new ldCover({
+          return this$.ldcv[node.getAttribute('data-name')] = new ldcover({
             root: node
           });
         }

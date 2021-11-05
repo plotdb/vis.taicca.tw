@@ -341,7 +341,7 @@ Ctrl.prototype = import$(import$(Object.create(Object.prototype), renderInterfac
         ldcv: function(arg$){
           var node;
           node = arg$.node;
-          return this$.ldcv[node.getAttribute('data-name')] = new ldCover({
+          return this$.ldcv[node.getAttribute('data-name')] = new ldcover({
             root: node
           });
         }
@@ -482,7 +482,7 @@ Ctrl.prototype = import$(import$(Object.create(Object.prototype), renderInterfac
             }).then(function(arg$){
               var blob, name;
               blob = arg$.blob, name = arg$.name;
-              return ldFile.download({
+              return ldfile.download({
                 blob: blob,
                 name: name
               });
