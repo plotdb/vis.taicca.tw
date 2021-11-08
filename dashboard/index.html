@@ -171,18 +171,14 @@ pal = {
     init: function(){
       var regs, scope, this$ = this;
       regs = {
-        block: function(arg$){
-          var name, version;
-          name = arg$.name, version = arg$.version;
-          return "/assets/block/" + name + "/" + version + "/index.html";
-        },
         module: function(arg$){
-          var name, version, path;
-          name = arg$.name, version = arg$.version, path = arg$.path;
-          if (!/^d3/.exec(name)) {
-            return "/assets/lib/" + name + "/" + version + "/" + path;
-          }
-          return "/assets/custom-lib/d3/" + name + ".v" + version + ".min.js";
+          var name, version, path, type;
+          name = arg$.name, version = arg$.version, path = arg$.path, type = arg$.type;
+          return type === 'block'
+            ? "/assets/block/" + name + "/" + version + "/index.html"
+            : !/^d3/.exec(name)
+              ? "/assets/lib/" + name + "/" + version + "/" + path
+              : "/assets/custom-lib/d3/" + name + ".v" + version + ".min.js";
         }
       };
       scope = new rescope({
@@ -191,8 +187,7 @@ pal = {
       });
       return scope.init().then(function(){
         this$.mgr = new block.manager({
-          registry: regs.block,
-          moduleRegistry: regs.module,
+          registry: regs.module,
           rescope: scope
         });
         return i18next.init({
