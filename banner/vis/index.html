@@ -76,7 +76,7 @@ metacsv = function(opt){
 };</script><script>(function(it){
   return it.apply({});
 })(function(){
-  var cfg, qs, ref$, this$ = this;
+  var cfg, regs, qs, ref$, this$ = this;
   cfg = {
     pal: {
       colors: ['#d55741', '#e8c05c', '#7febb2', '#577aeb', '#aaaaaa'],
@@ -90,6 +90,25 @@ metacsv = function(opt){
       position: 'inner'
     }
   };
+  regs = {
+    block: function(arg$){
+      var name, version;
+      name = arg$.name, version = arg$.version;
+      return "/assets/block/" + name + "/" + version + "/index.html";
+    },
+    module: function(arg$){
+      var name, version, path;
+      name = arg$.name, version = arg$.version, path = arg$.path;
+      if (!/^d3/.exec(name)) {
+        return "/assets/lib/" + name + "/" + version + "/" + path;
+      }
+      return "/assets/custom-lib/d3/" + name + ".v" + version + ".min.js";
+    }
+  };
+  this.scope = new rescope({
+    prejs: ['https://polyfill.io/v3/polyfill.min.js?features=ResizeObserver'],
+    registry: regs.module
+  });
   this.view = new ldview({
     initRender: false,
     ctx: this.ctx = {
@@ -126,18 +145,15 @@ metacsv = function(opt){
   });
   this.manager = new block.manager({
     registry: function(arg$){
-      var name, version;
-      name = arg$.name, version = arg$.version;
-      return "/assets/block/" + name + "/" + version + "/index.html";
+      var name, version, path, type;
+      name = arg$.name, version = arg$.version, path = arg$.path, type = arg$.type;
+      return type === 'block'
+        ? "/assets/block/" + name + "/" + version + "/index.html"
+        : !/^d3/.exec(name)
+          ? "/assets/lib/" + name + "/" + version + "/" + path
+          : "/assets/custom-lib/d3/" + name + ".v" + version + ".min.js";
     },
-    moduleRegistry: function(arg$){
-      var name, version, path;
-      name = arg$.name, version = arg$.version, path = arg$.path;
-      if (!/^d3/.exec(name)) {
-        return "/assets/lib/" + name + "/" + version + "/" + path;
-      }
-      return "/assets/custom-lib/d3/" + name + ".v" + version + ".min.js";
-    }
+    rescope: this.scope
   });
   qs = Object.fromEntries(window.location.search.substring(1).split('&').map(function(it){
     return it.split('=').map(function(it){
@@ -154,7 +170,9 @@ metacsv = function(opt){
     return;
   }
   this.view.render();
-  return this.manager.init().then(function(){
+  return this.scope.init().then(function(){
+    return this$.manager.init();
+  }).then(function(){
     return i18next.init({
       supportedLng: ['en', 'zh-TW'],
       fallbackLng: 'zh-TW'

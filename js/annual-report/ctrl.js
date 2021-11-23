@@ -416,8 +416,23 @@ Ctrl.prototype = import$(import$(Object.create(Object.prototype), renderInterfac
             return this$.setPerspective(null);
           },
           download: function(arg$){
-            var node, name, csv, k, v, href, ba, svgNode, box, svgStyle, svgRaw, svgXml;
+            var node, lc, logo, qrcode, watermark, name, csv, k, v, href, ba, svgNode, box;
             node = arg$.node;
+            lc = {};
+            logo = {
+              url: '/assets/img/logo-sm.png',
+              width: 304,
+              height: 75
+            };
+            qrcode = {
+              url: '/assets/img/qrcode.png',
+              width: 75,
+              height: 75
+            };
+            watermark = {
+              padding: 10
+            };
+            watermark.height = watermark.padding * 2 + logo.height;
             name = node.getAttribute('data-name');
             csv = [[''].concat(this$.data.label)].concat((function(){
               var ref$, results$ = [];
@@ -437,11 +452,25 @@ Ctrl.prototype = import$(import$(Object.create(Object.prototype), renderInterfac
             box = svgNode.getBoundingClientRect();
             svgNode = svgNode.cloneNode(true);
             svgNode.setAttribute('xmlns', "http://www.w3.org/2000/svg");
-            svgStyle = "<style type=\"text/css\">\nsvg { background: #fff }\ntext { font-family: sans-serif; }\n.text-sm { font-size: .8em }\n</style>";
-            svgRaw = svgNode.outerHTML.replace('</svg>', svgStyle + "</svg>");
-            svgXml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + svgRaw;
-            return smiltool.svgToDataurl(svgRaw, box.width, box.height).then(function(u){
-              return smiltool.urlToDataurl(u, box.width, box.height);
+            svgNode.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
+            svgNode.setAttribute("viewbox", "0 0 " + box.width + " " + (box.height + watermark.height));
+            svgNode.setAttribute("width", box.width + "px");
+            svgNode.setAttribute("height", (box.height + watermark.height) + "px");
+            return ldfile.fromURL(logo.url, 'dataurl').then(function(arg$){
+              var result;
+              result = arg$.result;
+              lc.logo = result;
+              return ldfile.fromURL(qrcode.url, 'dataurl');
+            }).then(function(arg$){
+              var result, svgStyle, svgRaw, svgXml;
+              result = arg$.result;
+              lc.qrcode = result;
+              svgStyle = "<style type=\"text/css\">\nsvg { background: #fff }\ntext { font-family: sans-serif; }\n.text-sm { font-size: .8em }\n</style>\n<image x=\"" + watermark.padding + "\" y=\"" + (box.height + watermark.padding) + "\"\nxlink:href=\"" + lc.logo + "\" width=\"" + logo.width + "\" height=\"" + logo.height + "\"/>\n<image x=\"" + (box.width - qrcode.width - watermark.padding) + "\" y=\"" + (box.height + watermark.padding) + "\"\nxlink:href=\"" + lc.qrcode + "\" width=\"" + qrcode.width + "\" height=\"" + qrcode.height + "\"/>";
+              svgRaw = svgNode.outerHTML.replace('</svg>', svgStyle + "</svg>");
+              lc.svgXml = svgXml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + svgRaw;
+              return smiltool.svgToDataurl(svgRaw, box.width, box.height + watermark.height);
+            }).then(function(u){
+              return smiltool.urlToDataurl(u, box.width, box.height + watermark.height);
             }).then(function(u){
               return smiltool.dataurlToBlob(u);
             }).then(function(png){
@@ -451,7 +480,7 @@ Ctrl.prototype = import$(import$(Object.create(Object.prototype), renderInterfac
                 u = URL.createObjectURL(png);
                 zip = new JSZip();
                 zip.file("result.csv", ba.buffer);
-                zip.file("result.svg", svgXml);
+                zip.file("result.svg", lc.svgXml);
                 zip.file("result.png", png);
                 return zip.generateAsync({
                   type: 'blob'
@@ -473,7 +502,7 @@ Ctrl.prototype = import$(import$(Object.create(Object.prototype), renderInterfac
                 };
               case 'svg':
                 return {
-                  blob: new Blob([svgXml], {
+                  blob: new Blob([lc.svgXml], {
                     type: "image/svg+xml"
                   }),
                   name: "result.svg"
