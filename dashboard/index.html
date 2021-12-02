@@ -643,7 +643,7 @@ pal = {
         body.map(function(b){
           var name;
           name = b["中文片名"];
-          if (!hash[name] || hash[name]["累計銷售金額"] > b["累計銷售金額"]) {
+          if (!hash[name] || +hash[name]["累計銷售金額"] < +b["累計銷售金額"]) {
             return hash[name] = b;
           }
         });
