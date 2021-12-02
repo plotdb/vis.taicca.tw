@@ -647,6 +647,17 @@ pal = {
             return hash[name] = b;
           }
         });
+        for (k in hash) {
+          v = hash[k];
+          hash[k] = JSON.parse(JSON.stringify(v));
+        }
+        body.map(function(b){
+          var name;
+          name = b["中文片名"];
+          if (hash[name] && +hash[name]["上映院數"] < +b["上映院數"]) {
+            return hash[name]["上映院數"] = +b["上映院數"];
+          }
+        });
         this.movie.all = (function(){
           var ref$, results$ = [];
           for (k in ref$ = hash) {
