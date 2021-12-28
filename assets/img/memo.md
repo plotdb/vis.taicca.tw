@@ -1,0 +1,1 @@
+ - only put logo that comply with CIS in `logo` folder

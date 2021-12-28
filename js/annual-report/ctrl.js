@@ -420,14 +420,14 @@ Ctrl.prototype = import$(import$(Object.create(Object.prototype), renderInterfac
             node = arg$.node;
             lc = {};
             logo = {
-              url: '/assets/img/logo-sm.png',
-              width: 304,
-              height: 75
+              url: '/assets/img/logo/watermark-sm.png',
+              width: 380,
+              height: 50
             };
             qrcode = {
-              url: '/assets/img/qrcode.png',
-              width: 75,
-              height: 75
+              url: '/assets/img/qrcode-sm.png',
+              width: 50,
+              height: 50
             };
             watermark = {
               padding: 10
