@@ -1,80 +1,74 @@
-<div><script type="@plotdb/block">(function(it){
-  return it();
-})(function(){
-  var blockFactory, mod;
-  blockFactory = {
-    pkg: {
-      name: 'axis',
-      version: '0.0.1',
-      extend: {
-        name: "base",
-        version: "0.0.1"
-      },
-      dependencies: []
+<div><script type="@plotdb/block">var mod;
+module.exports = {
+  pkg: {
+    name: 'axis',
+    version: '0.0.1',
+    extend: {
+      name: "base",
+      version: "0.0.1"
     },
-    init: function(arg$){
-      var root, context, pubsub;
-      root = arg$.root, context = arg$.context, pubsub = arg$.pubsub;
-      return pubsub.fire('init', {
-        mod: mod({
-          context: context
-        })
-      }).then(function(it){
-        return it[0];
-      });
+    dependencies: []
+  },
+  init: function(arg$){
+    var root, context, pubsub;
+    root = arg$.root, context = arg$.context, pubsub = arg$.pubsub;
+    return pubsub.fire('init', {
+      mod: mod({
+        context: context
+      })
+    }).then(function(it){
+      return it[0];
+    });
+  }
+};
+mod = function(arg$){
+  var context, d3, forceBoundary, ldcolor, repeatString$, infinite;
+  context = arg$.context;
+  d3 = context.d3, forceBoundary = context.forceBoundary, ldcolor = context.ldcolor, repeatString$ = context.repeatString$, infinite = context.infinite;
+  return {
+    sample: function(){
+      return {
+        raw: [0, 1, 2, 3, 4, 5, 6, 7].map(function(val){
+          return {
+            val: val,
+            name: val
+          };
+        }),
+        binding: {
+          name: {
+            key: 'name'
+          },
+          value: {
+            key: 'val'
+          }
+        }
+      };
+    },
+    config: {},
+    dimension: {
+      value: {
+        type: 'R',
+        name: "value"
+      },
+      name: {
+        type: 'N',
+        name: "name"
+      }
+    },
+    init: function(){
+      this.ab = d3.axisBottom();
+      this.scale = {
+        x: d3.scaleLinear()
+      };
+      return this.g = d3.select(this.svg).append('g');
+    },
+    parse: function(){},
+    resize: function(){
+      this.scale.x.domain([0, 20]).range([20, this.box.width - 20]);
+      return this.ab.scale(this.scale.x).tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+    },
+    render: function(){
+      return this.g.call(this.ab);
     }
   };
-  mod = function(arg$){
-    var context, d3, forceBoundary, ldcolor, repeatString$, infinite;
-    context = arg$.context;
-    d3 = context.d3, forceBoundary = context.forceBoundary, ldcolor = context.ldcolor, repeatString$ = context.repeatString$, infinite = context.infinite;
-    return {
-      sample: function(){
-        return {
-          raw: [0, 1, 2, 3, 4, 5, 6, 7].map(function(val){
-            return {
-              val: val,
-              name: val
-            };
-          }),
-          binding: {
-            name: {
-              key: 'name'
-            },
-            value: {
-              key: 'val'
-            }
-          }
-        };
-      },
-      meta: {},
-      config: {},
-      dimension: {
-        value: {
-          type: 'R',
-          name: "value"
-        },
-        name: {
-          type: 'N',
-          name: "name"
-        }
-      },
-      init: function(){
-        this.ab = d3.axisBottom();
-        this.scale = {
-          x: d3.scaleLinear()
-        };
-        return this.g = d3.select(this.svg).append('g');
-      },
-      parse: function(){},
-      resize: function(){
-        this.scale.x.domain([0, 20]).range([20, this.box.width - 20]);
-        return this.ab.scale(this.scale.x).tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
-      },
-      render: function(){
-        return this.g.call(this.ab);
-      }
-    };
-  };
-  return blockFactory;
-});</script></div>
+};</script></div>

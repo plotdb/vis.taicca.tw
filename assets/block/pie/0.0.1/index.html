@@ -10,271 +10,326 @@
 .pdl-layout > div[data-type=layout] > [data-name=legend] {
   min-width: 6em;
 }
-</style><script type="@plotdb/block">(function(it){
-  return it();
-})(function(){
-  var blockFactory, mod;
-  blockFactory = {
-    pkg: {
-      name: 'pie',
-      version: '0.0.1',
-      extend: {
-        name: "base",
-        version: "0.0.1"
-      },
-      dependencies: [],
-      i18n: {
-        "zh-TW": {
-          value: "數值",
-          name: "名稱",
-          other: "其它"
+</style><script type="@plotdb/block">var mod;
+module.exports = {
+  pkg: {
+    name: 'pie',
+    version: '0.0.1',
+    extend: {
+      name: "base",
+      version: "0.0.1"
+    },
+    dependencies: [],
+    i18n: {
+      "zh-TW": {
+        value: "數值",
+        name: "名稱",
+        category: "分類",
+        other: "其它"
+      }
+    }
+  },
+  init: function(arg$){
+    var root, context, pubsub, t;
+    root = arg$.root, context = arg$.context, pubsub = arg$.pubsub, t = arg$.t;
+    return pubsub.fire('init', {
+      mod: mod({
+        context: context,
+        t: t
+      })
+    });
+  }
+};
+mod = function(arg$){
+  var context, t, chart, d3;
+  context = arg$.context, t = arg$.t;
+  chart = context.chart, d3 = context.d3;
+  return {
+    sample: function(){
+      return {
+        raw: [1, 2, 3, 4, 5, 6, 7].map(function(val){
+          return {
+            val: (10 * Math.random()).toFixed(2),
+            name: val
+          };
+        }),
+        binding: {
+          name: {
+            key: 'name'
+          },
+          category: [
+            {
+              key: 'c1'
+            }, {
+              key: 'c2'
+            }, {
+              key: 'c3'
+            }
+          ],
+          value: {
+            key: 'val'
+          }
         }
+      };
+    },
+    config: {},
+    dimension: {
+      name: {
+        type: 'NO',
+        name: "name",
+        priority: 10
+      },
+      value: {
+        type: 'R',
+        name: "value",
+        priority: 20
+      },
+      category: {
+        type: 'C',
+        name: "category",
+        priority: 25,
+        multiple: true
       }
     },
-    init: function(arg$){
-      var root, context, pubsub, t;
-      root = arg$.root, context = arg$.context, pubsub = arg$.pubsub, t = arg$.t;
-      return pubsub.fire('init', {
-        mod: mod({
-          context: context,
-          t: t
-        })
-      });
-    }
-  };
-  mod = function(arg$){
-    var context, t, chart, d3;
-    context = arg$.context, t = arg$.t;
-    chart = context.chart, d3 = context.d3;
-    return {
-      sample: function(){
-        return {
-          raw: [1, 2, 3, 4, 5].map(function(val){
-            return {
-              val: (10 * Math.random()).toFixed(2),
-              name: val
-            };
-          }),
-          binding: {
-            name: {
-              key: 'name'
-            },
-            value: {
-              key: 'val'
-            }
+    init: function(){
+      var tint, this$ = this;
+      this.g = Object.fromEntries(['view', 'legend'].map(function(it){
+        return [it, d3.select(this$.layout.getGroup(it)).append('g')];
+      }));
+      this.tint = tint = new chart.utils.tint();
+      this.tip = new chart.utils.tip({
+        root: this.root,
+        accessor: function(arg$){
+          var evt, data, v;
+          evt = arg$.evt;
+          if (!(evt.target && (data = d3.select(evt.target).datum()))) {
+            return null;
           }
-        };
-      },
-      meta: {},
-      config: {},
-      dimension: {
-        value: {
-          type: 'R',
-          name: "value",
-          priority: 20
+          v = isNaN(data.value)
+            ? '-'
+            : data.value.toFixed(2) + "" + (this$.binding.value.unit || '');
+          return {
+            name: data.name,
+            value: v
+          };
         },
-        name: {
-          type: 'NO',
-          name: "name",
-          priority: 10
+        range: function(){
+          return this$.layout.getNode('view').getBoundingClientRect();
         }
-      },
-      init: function(){
-        var tint, this$ = this;
-        this.g = Object.fromEntries(['view', 'legend'].map(function(it){
-          return [it, d3.select(this$.layout.getGroup(it)).append('g')];
-        }));
-        this.tint = tint = new chart.utils.tint();
-        this.tip = new chart.utils.tip({
-          root: this.root,
-          accessor: function(arg$){
-            var evt, data, v;
-            evt = arg$.evt;
-            if (!(evt.target && (data = d3.select(evt.target).datum()))) {
-              return null;
-            }
-            v = isNaN(data.value)
-              ? '-'
-              : data.value.toFixed(2) + "" + (this$.binding.value.unit || '');
+      });
+      this.legend = new chart.utils.legend({
+        layout: this.layout,
+        name: 'legend',
+        root: this.root,
+        shape: function(d){
+          return d3.select(this).attr('fill', tint.get(d.text));
+        },
+        cfg: {
+          selectable: true
+        }
+      });
+      this.legend.on('select', function(){
+        this$.bind();
+        this$.resize();
+        return this$.render();
+      });
+      this.arc = d3.arc().innerRadius(0).outerRadius(100).startAngle(0).endAngle(Math.PI / 2);
+      return this.total = {};
+    },
+    destroy: function(){
+      return this.tip.destroy();
+    },
+    parse: function(){
+      var bindCat, _parse;
+      this.tint.reset();
+      bindCat = this.binding.category || [];
+      _parse = function(data, lv, parent, result){
+        var ended, list, keys, i$, len$, item, subdata;
+        lv == null && (lv = 0);
+        parent == null && (parent = {});
+        result == null && (result = []);
+        ended = lv >= bindCat.length - 1;
+        if (ended) {
+          list = data;
+        } else {
+          keys = Array.from(new Set(data.map(function(it){
+            return it.category[lv];
+          })));
+          list = keys.map(function(it){
             return {
-              name: data.name,
-              value: v
+              _cat: it,
+              colorKey: lv ? data[0].category[lv - 1] : it
             };
-          },
-          range: function(){
-            return this$.layout.getNode('view').getBoundingClientRect();
+          });
+        }
+        for (i$ = 0, len$ = list.length; i$ < len$; ++i$) {
+          item = list[i$];
+          item.parent = parent;
+          result.push(item);
+          subdata = data.filter(fn$);
+          item.value = subdata.reduce(fn1$, 0);
+          item._lv = lv;
+          if (!ended) {
+            _parse(subdata, lv + 1, item, result);
           }
-        });
-        this.legend = new chart.utils.legend({
-          layout: this.layout,
-          name: 'legend',
-          root: this.root,
-          shape: function(d){
-            return d3.select(this).attr('fill', tint.get(d.text));
-          },
-          cfg: {
-            selectable: true
-          }
-        });
-        this.legend.on('select', function(){
-          this$.bind();
-          this$.resize();
-          return this$.render();
-        });
-        this.arc = d3.arc().innerRadius(0).outerRadius(100).startAngle(0).endAngle(Math.PI / 2);
-        return this.total = {};
-      },
-      destroy: function(){
-        return this.tip.destroy();
-      },
-      parse: function(){
-        var other, ref$, total, sum, i$, to$, idx;
-        this.tint.reset();
-        this.parsed = this.data.map(function(it){
-          var ret;
-          ret = import$({}, it);
-          if (isNaN(ret.value)) {
-            ret.value = 0;
-          }
-          return ret;
-        });
-        this.parsed.sort(function(a, b){
+        }
+        list.sort(function(a, b){
           return b.value - a.value;
         });
-        if (this.cfg.collapse != null && this.cfg.collapse.enabled) {
-          if (this.cfg.collapse.method === 'count') {
-            other = this.parsed.splice(this.cfg.collapse.threshold || 7);
-            if (other.length) {
-              this.parsed.push({
-                name: t("other"),
-                value: other.reduce(function(a, b){
-                  return a + b.value;
-                }, 0)
-              });
-            }
-          } else {
-            ref$ = [
-              this.parsed.reduce(function(a, b){
-                return a + b.value;
-              }, 0), 0
-            ], total = ref$[0], sum = ref$[1];
-            for (i$ = 0, to$ = this.parsed.length; i$ < to$; ++i$) {
-              idx = i$;
-              sum += this.parsed[idx].value;
-              if (sum / total > (this.cfg.collapse.threshold || 0.75)) {
-                break;
-              }
-            }
-            other = this.parsed.splice(idx + 1);
-            if (other.length) {
-              this.parsed.push({
-                name: t("other"),
-                value: other.reduce(function(a, b){
-                  return a + b.value;
-                }, 0)
-              });
-            }
-          }
+        return result;
+        function fn$(it){
+          return it.category[lv] === item._cat;
         }
-        return this.legend.data(this.parsed.map(function(it){
-          return {
-            text: it.name,
-            key: it.name
-          };
-        }));
-      },
-      bind: function(){
-        var offset, i$, to$, i, obj, that, this$ = this, results$ = [];
-        this.parsed.map(function(it){
-          return it.picked = this$.legend.isSelected(it.name);
-        });
-        this.total.old = this.total.cur;
-        this.total.cur = this.parsed.reduce(function(a, b){
-          return a + (b.picked ? b.value : 0);
-        }, 0) || 1;
-        if (!this.total.old) {
-          this.total.old = this.total.cur;
+        function fn1$(a, b){
+          return a + b.value;
         }
-        offset = 0;
-        for (i$ = 0, to$ = this.parsed.length; i$ < to$; ++i$) {
-          i = i$;
-          obj = this.parsed[i];
-          if (!obj.old) {
-            obj.old = {
-              s: (that = this.parsed[i - 1]) ? that.old.e : 0,
-              e: 0
-            };
-          }
-          if (obj.cur) {
-            obj.old = obj.cur;
-          }
-          obj.cur = {
-            s: offset,
-            e: offset + (obj.picked ? obj.value : 0)
-          };
-          obj.angle = {
-            old: {
-              s: 2 * Math.PI * obj.old.s / this.total.old,
-              e: 2 * Math.PI * obj.old.e / this.total.old
-            },
-            cur: {
-              s: 2 * Math.PI * obj.cur.s / this.total.cur,
-              e: 2 * Math.PI * obj.cur.e / this.total.cur
-            }
-          };
-          if (obj.picked) {
-            results$.push(offset += obj.value);
-          }
+      };
+      this.parsed = this.data.map(function(it){
+        var ret;
+        ret = import$({}, it);
+        if (isNaN(ret.value)) {
+          ret.value = 0;
         }
-        return results$;
-      },
-      resize: function(){
-        var box, ref$, w, h, size;
-        this.layout.update(false);
-        box = this.layout.getBox('view');
-        this.layout.getNode('view').style.width = box.height + "px";
-        this.layout.update(false);
-        box = this.layout.getBox('view');
-        ref$ = [box.width, box.height], w = ref$[0], h = ref$[1];
-        size = Math.min(w, h);
-        return this.arc.innerRadius((this.cfg.donutPercent || 0.7) * size / 2).outerRadius(size / 2);
-      },
-      render: function(){
-        var tint, interpolateArc, box, x$, this$ = this;
-        tint = this.tint;
-        interpolateArc = function(a1, a2){
-          return function(t){
-            var ref$, s, e;
-            ref$ = ['s', 'e'].map(function(i){
-              return (a2[i] - a1[i]) * t + a1[i];
-            }), s = ref$[0], e = ref$[1];
-            this$.arc.startAngle(s).endAngle(e);
-            return this$.arc();
-          };
+        ret.colorKey = (ret.category || (ret.category = []))[0] != null
+          ? (ret.category || (ret.category = []))[0]
+          : ret.name;
+        return ret;
+      });
+      this.parsed.sort(function(a, b){
+        return b.value - a.value;
+      });
+      /*
+      # for sunburst ( under dev )
+      @cats = []
+      @all = _parse @parsed
+      if !bind-cat.length => @cats = [@all]
+      for lv from 0 til bind-cat.length =>
+        @cats.push @all.filter -> it._lv == lv
+      @parsed.sort (a,b) -> b.value - a.value
+      if bind-cat.length == 0 and @cfg.collapse? and @cfg.collapse.enabled =>
+        if @cfg.collapse.method == \count =>
+          other = @parsed.splice(@cfg.collapse.threshold or 7)
+          if other.length => @parsed.push {name: t("other"), value: other.reduce(((a,b) -> a + b.value),0)}
+        else # == \percent
+          [total,sum] = [@parsed.reduce(((a,b) -> a + b.value),0), 0]
+          for idx from 0 til @parsed.length =>
+            sum += @parsed[idx].value
+            if (sum / total) > (@cfg.collapse.threshold or 0.75) => break
+          other = @parsed.splice(idx + 1)
+          if other.length => @parsed.push {name: t("other"), value: other.reduce(((a,b) -> a + b.value),0)}
+      */
+      return this.legend.data(this.parsed.map(function(it){
+        return {
+          text: it.name,
+          key: it.name
         };
-        if (this.cfg != null && this.cfg.pal) {
-          this.tint.set(this.cfg.pal.colors.map(function(it){
-            return it.value || it;
-          }));
-        }
-        box = this.layout.getBox('view');
-        this.g.view.attr('transform', "translate(" + box.width / 2 + "," + box.height / 2 + ")");
-        x$ = this.g.view.selectAll('path.data').data(this.parsed, function(it){
-          return it.name || it._idx;
-        });
-        x$.exit().remove();
-        x$.enter().append('path').attr('class', 'data');
-        this.g.view.selectAll('path.data').attr('fill', function(d, i){
-          return this$.tint.get(d.name || d._idx);
-        }).transition().duration(350).attrTween('d', function(d, i){
-          return interpolateArc(d.angle.old, d.angle.cur);
-        });
-        return this.legend.render();
+      }));
+    },
+    bind: function(){
+      /*
+      # for sunburst ( under dev )
+      for cat in @cats =>
+        total = cat.reduce(((a,b) -> a + b.value),0)
+        offset = 0
+        rate = 2 * Math.PI / (total or 1)
+        for i from 0 til cat.length =>
+          obj = cat[i]
+          obj.angle = {}
+          obj.angle.old = obj.angle.cur = {
+            s: offset * rate
+            e: (offset + obj.value) * rate
+          }
+          offset += obj.value
+      */
+      var offset, i$, to$, i, obj, that, this$ = this, results$ = [];
+      this.parsed.map(function(it){
+        return it.picked = this$.legend.isSelected(it.name);
+      });
+      this.total.old = this.total.cur;
+      this.total.cur = this.parsed.reduce(function(a, b){
+        return a + (b.picked ? b.value : 0);
+      }, 0) || 1;
+      if (!this.total.old) {
+        this.total.old = this.total.cur;
       }
-    };
+      offset = 0;
+      for (i$ = 0, to$ = this.parsed.length; i$ < to$; ++i$) {
+        i = i$;
+        obj = this.parsed[i];
+        if (!obj.old) {
+          obj.old = {
+            s: (that = this.parsed[i - 1]) ? that.old.e : 0,
+            e: 0
+          };
+        }
+        if (obj.cur) {
+          obj.old = obj.cur;
+        }
+        obj.cur = {
+          s: offset,
+          e: offset + (obj.picked ? obj.value : 0)
+        };
+        obj.angle = {
+          old: {
+            s: 2 * Math.PI * obj.old.s / this.total.old,
+            e: 2 * Math.PI * obj.old.e / this.total.old
+          },
+          cur: {
+            s: 2 * Math.PI * obj.cur.s / this.total.cur,
+            e: 2 * Math.PI * obj.cur.e / this.total.cur
+          }
+        };
+        if (obj.picked) {
+          results$.push(offset += obj.value);
+        }
+      }
+      return results$;
+    },
+    resize: function(){
+      var box, ref$, w, h, size;
+      this.layout.update(false);
+      box = this.layout.getBox('view');
+      this.layout.getNode('view').style.width = box.height + "px";
+      this.layout.update(false);
+      box = this.layout.getBox('view');
+      ref$ = [box.width, box.height], w = ref$[0], h = ref$[1];
+      size = Math.min(w, h);
+      return this.arc.innerRadius((this.cfg.donutPercent || 0.7) * size / 2).outerRadius(size / 2);
+    },
+    render: function(){
+      var tint, interpolateArc, box, x$, this$ = this;
+      tint = this.tint;
+      interpolateArc = function(a1, a2){
+        return function(t){
+          var ref$, s, e;
+          ref$ = ['s', 'e'].map(function(i){
+            return (a2[i] - a1[i]) * t + a1[i];
+          }), s = ref$[0], e = ref$[1];
+          this$.arc.startAngle(s).endAngle(e);
+          return this$.arc();
+        };
+      };
+      if (this.cfg != null && this.cfg.palette) {
+        this.tint.set(this.cfg.palette.colors.map(function(it){
+          return it.value || it;
+        }));
+      }
+      box = this.layout.getBox('view');
+      this.g.view.attr('transform', "translate(" + box.width / 2 + "," + box.height / 2 + ")");
+      x$ = this.g.view.selectAll('path.data').data(this.parsed, function(it){
+        return it.name || it._idx;
+      });
+      x$.exit().remove();
+      x$.enter().append('path').attr('class', 'data');
+      this.g.view.selectAll('path.data').attr('fill', function(d, i){
+        return this$.tint.get(d.colorKey || d._idx);
+      }).transition().duration(350).attrTween('d', function(d, i){
+        return interpolateArc(d.angle.old, d.angle.cur);
+      });
+      return this.legend.render();
+    }
   };
-  return blockFactory;
-});
+};
 function import$(obj, src){
   var own = {}.hasOwnProperty;
   for (var key in src) if (own.call(src, key)) obj[key] = src[key];

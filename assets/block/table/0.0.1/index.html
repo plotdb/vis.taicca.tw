@@ -1,73 +1,67 @@
-<div style="height:100%"><plug name="layout"></plug><script type="@plotdb/block">(function(it){
-  return it();
-})(function(){
-  var blockFactory;
-  blockFactory = {
-    pkg: {
-      name: 'table',
-      version: '0.0.1',
-      extend: {
-        name: "empty",
-        version: "0.0.1"
-      },
-      dependencies: [
-        {
-          url: "/assets/lib/gridjs/main/gridjs.production.min.js"
-        }, {
-          url: "/assets/lib/gridjs/main/theme/mermaid.min.css"
-        }
-      ]
+<div style="height:100%"><plug name="layout"></plug><script type="@plotdb/block">module.exports = {
+  pkg: {
+    name: 'table',
+    version: '0.0.1',
+    extend: {
+      name: "empty",
+      version: "0.0.1"
     },
-    init: function(arg$){
-      var root, context, pubsub, gridjs;
-      root = arg$.root, context = arg$.context, pubsub = arg$.pubsub;
-      gridjs = context.gridjs;
-      return pubsub.fire('init', {
-        layout: false,
-        prepareSvg: false,
-        mod: {
-          init: function(){
-            var grid;
-            this.grid = grid = new gridjs.Grid({
-              columns: [' ', '  ', '   ', '    ', '      '],
-              height: this.root.getBoundingClientRect().height + "px",
-              fixedHeader: true,
-              sort: true,
-              search: false,
-              resizable: true,
-              data: [].concat([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function(){
-                return [];
-              }))
-            });
-            return grid.render(this.root);
-          },
-          parse: function(){
-            var head, res$, k, raw;
-            res$ = [];
-            for (k in this.raw[0] || {}) {
-              res$.push(k);
-            }
-            head = res$;
-            head.length;
-            raw = this.raw;
-            console.log(raw);
-            return;
-            return this.grid.updateConfig({
-              columns: raw[0],
-              data: raw.slice(1).concat((function(){
-                var i$, to$, ref$, results$ = [];
-                for (i$ = 0, to$ = (ref$ = 20 - raw.length) > 0 ? ref$ : 0; i$ <= to$; ++i$) {
-                  results$.push(i$);
-                }
-                return results$;
-              }()).map(function(){
-                return [];
-              }))
-            }).forceRender();
+    dependencies: [
+      {
+        url: "/assets/lib/gridjs/main/gridjs.production.min.js"
+      }, {
+        url: "/assets/lib/gridjs/main/theme/mermaid.min.css"
+      }
+    ]
+  },
+  init: function(arg$){
+    var root, context, pubsub, gridjs;
+    root = arg$.root, context = arg$.context, pubsub = arg$.pubsub;
+    gridjs = context.gridjs;
+    return pubsub.fire('init', {
+      layout: false,
+      prepareSvg: false,
+      mod: {
+        init: function(){
+          var grid;
+          this.grid = grid = new gridjs.Grid({
+            columns: [' ', '  ', '   ', '    ', '      '],
+            height: this.root.getBoundingClientRect().height + "px",
+            fixedHeader: true,
+            sort: true,
+            search: false,
+            resizable: true,
+            data: [].concat([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function(){
+              return [];
+            }))
+          });
+          return grid.render(this.root);
+        },
+        parse: function(){
+          var head, res$, k, raw;
+          res$ = [];
+          for (k in this.raw[0] || {}) {
+            res$.push(k);
           }
+          head = res$;
+          head.length;
+          raw = this.raw;
+          console.log(raw);
+          return;
+          return this.grid.updateConfig({
+            columns: raw[0],
+            data: raw.slice(1).concat((function(){
+              var i$, to$, ref$, results$ = [];
+              for (i$ = 0, to$ = (ref$ = 20 - raw.length) > 0 ? ref$ : 0; i$ <= to$; ++i$) {
+                results$.push(i$);
+              }
+              return results$;
+            }()).map(function(){
+              return [];
+            }))
+          }).forceRender();
         }
-      });
-    }
-  };
-  return blockFactory;
-});</script></div>
+      }
+    });
+  }
+};</script></div>

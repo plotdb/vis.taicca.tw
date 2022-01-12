@@ -1,7 +1,7 @@
 <div class="base" style="width:100%;height:100%"><plug name="layout"></plug><style type="text/css">*[plug=layout] {
   fill: currentColor;
 }
-</style><script type="@plotdb/block">({
+</style><script type="@plotdb/block">module.exports = {
   pkg: {
     name: 'base',
     version: '0.0.1',
@@ -9,72 +9,93 @@
       {
         name: "d3",
         version: "4",
+        path: "build/d3.min.js",
         async: false
       }, {
         name: "d3-selection",
         version: "2",
+        path: "d3-selection.min.js",
         async: false
       }, {
         name: "d3-random",
-        version: "2"
+        version: "2",
+        path: "d3-random.min.js"
       }, {
         name: "d3-dispatch",
         version: "2",
+        path: "d3-dispatch.min.js",
         async: false
       }, {
         name: "d3-transition",
-        version: "2"
+        version: "3",
+        path: "d3-transition.min.js"
       }, {
         name: "d3-format",
-        version: "2"
+        version: "2",
+        path: "d3-format.min.js"
       }, {
         name: "d3-array",
         version: "2",
-        async: false
+        async: false,
+        path: "d3-array.min.js"
       }, {
         name: "d3-color",
-        version: "2"
+        version: "2",
+        path: "d3-color.min.js"
       }, {
         name: "d3-path",
-        version: "2"
+        version: "2",
+        path: "d3-path.min.js"
       }, {
         name: "d3-shape",
-        version: "2"
+        version: "2",
+        path: "d3-shape.min.js"
       }, {
         name: "d3-interpolate",
-        version: "2",
-        async: false
+        version: "3",
+        async: false,
+        path: "d3-interpolate.min.js"
       }, {
         name: "d3-scale-chromatic",
-        version: "1"
+        version: "1",
+        path: "d3-scale-chromatic.min.js"
       }, {
         name: "d3-ease",
-        version: "2"
+        version: "2",
+        path: "d3-ease.min.js"
       }, {
         name: "d3-quadtree",
-        version: "2"
+        version: "2",
+        path: "d3-quadtree.min.js"
       }, {
         name: "d3-timer",
-        version: "2"
+        version: "2",
+        path: "d3-timer.min.js"
       }, {
         name: "d3-force",
         version: "2",
-        async: false
+        async: false,
+        path: "d3-force.min.js"
       }, {
         name: "d3-hierarchy",
-        version: "2"
+        version: "2",
+        path: "d3-hierarchy.min.js"
       }, {
         name: "d3-force-boundary",
-        version: "0.0.1"
+        version: "0.0.1",
+        path: "d3-force-boundary.min.js"
       }, {
         name: "d3-drag",
-        version: "2"
+        version: "2",
+        path: "d3-drag.min.js"
       }, {
         name: "d3-brush",
-        version: "2"
+        version: "2",
+        path: "d3-brush.min.js"
       }, {
         name: "d3-axis",
-        version: "2"
+        version: "2",
+        path: "d3-axis.min.js"
       }, {
         name: "@loadingio/debounce.js",
         version: "main",
@@ -109,6 +130,10 @@
         version: "main",
         path: "chart.min.css",
         type: 'css'
+      }, {
+        name: "@plotdb/chart",
+        version: "main",
+        path: "utils/config.js"
       }, {
         name: "@plotdb/chart",
         version: "main",
@@ -185,7 +210,7 @@
       render: function(){}
     };
   }
-});
+};
 function import$(obj, src){
   var own = {}.hasOwnProperty;
   for (var key in src) if (own.call(src, key)) obj[key] = src[key];
