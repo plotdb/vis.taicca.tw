@@ -1,0 +1,552 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-Hant-tw">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="Asset-Path" content="/rsrc">
+	<meta name="bx:Cart-Counter" content="0">
+	<link rel="shortcut icon" href="/rsrc/img/favicon.ico">
+	
+<!--[if lt IE 9]><script src="/rsrc/lib/html5shiv.min.js"></script><![endif]-->
+	<meta name="bxn" content="1985-20220707164216"/>
+	<title>TFAI-國家電影及視聽文化中心 Taiwan Film and Audiovisual Institute</title>
+	<link href="/rsrc/css/main.css?dt=1656061984" rel="stylesheet">
+
+	
+	
+		
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-S04CPTHD59"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+
+			gtag('config', 'G-S04CPTHD59');
+		</script>
+		
+	
+
+	
+	<meta name="layout" content="zh/main"/>
+	<link href="/rsrc/lib/swiper7/swiper-bundle.min.css" rel="stylesheet">
+	<link href="/rsrc/css/home2.css" rel="stylesheet">
+
+</head>
+
+<body class="home opening">
+<input type="checkbox" title="手機版選單狀態" tabindex="-1" id="hamburger-toggle">
+
+<div id="root">
+	<div id="header">
+		<a href="/zh/front/index" class="logo" title="國家電影及視聽文化中心">國家電影及視聽文化中心</a>
+
+		<div class="menu-frame">
+			<label for="hamburger-toggle" class="menu-btn">
+				<div class="line">
+					<span></span>
+				</div>
+				<span>Menu</span>
+
+				<ul class="tool-menu">
+					<li><a href="/zh/member/profile" class="member" title="會員專區"></a></li>
+					<li><a href="/zh/program/calendar" class="calander" title="節目日曆"></a></li>
+					<li><a href="/zh/shopping/showCart" class="cart" title="購物車"><b>0</b></a></li>
+
+					<li>
+						
+							<a class="lang" href="/en/front/index" title="切換英文">EN</a>
+						
+
+					</li>
+				</ul>
+			</label>
+		</div>
+
+		<div id="menu-box">
+
+				<form action="/zh/front/search" method="post" class="keyword" name="searchForm" id="searchForm" >
+<input type="hidden" name="SYNCHRONIZER_TOKEN" value="7354da8b-526b-451d-871d-639d4590d323" id="SYNCHRONIZER_TOKEN" />
+<input type="hidden" name="SYNCHRONIZER_URI" value="/zh" id="SYNCHRONIZER_URI" />
+					<input type="text" id="keywords" name="q" placeholder="請輸入關鍵字搜尋">
+					<button type="submit">搜尋</button>
+				</form>
+
+
+			<div class="panel">
+				
+
+
+    <nav> <ul class="menu-ul"> <li> <span class="has-sub">節目資訊</span> <div> <a href="https://www.tfai.org.tw/zh/program/index" >節目總覽</a> <a href="https://www.tfai.org.tw/zh/program/calendar" >節目日曆</a> <a href="https://www.tfai.org.tw/zh/program/topicList" >主題節目</a> </div> </li> <li> <span class="has-sub">場館服務</span> <div> <a href="https://www.tfai.org.tw/zh/page/venue-info.html" >參觀資訊</a> <a href="https://www.tfai.org.tw/zh/page/camp.html" >場館介紹</a> <a href="https://lib.tfai.org.tw/" target="_blank">圖書館</a> <a href="https://www.tfai.org.tw/zh/page/our-camp.html" >場館租借服務</a> </div> </li> <li> <span class="has-sub">線上服務</span> <div> <a href="https://www.tfai.org.tw/zh/page/membership-info.html" >會員介紹</a> <a href="https://www.tfai.org.tw/zh/member/login" >會員專區</a> <a href="https://www.tfai.org.tw/zh/product/list" >TFAI商城</a> <a href="https://www.tfai.org.tw/zh/collection/index" >藏品資料查詢</a> <a href="https://www.tfai.org.tw/zh/downloads/rent" >電影資料租借</a> <a href="https://www.tfai.org.tw/zh/boxOffice/index" >票房公告</a> <a href="https://www.tfai.org.tw/zh/downloads/yearBook" >下載專區</a> </div> </li> <li> <span class="has-sub">最新消息</span> <div> <a href="https://www.tfai.org.tw/zh/event/list" >活動訊息</a> <a href="https://www.tfai.org.tw/zh/venueNotice/list" >場館公告</a> </div> </li> <li> <span class="has-sub">關於我們</span> <div> <a href="https://www.tfai.org.tw/zh/page/about-center.html" >中心簡介</a> <a href="https://www.tfai.org.tw/zh/about/history" >中心大事紀</a> <a href="https://www.tfai.org.tw/zh/page/directors.html" >董監事</a> <a href="https://www.tfai.org.tw/zh/page/organization.html" >組織架構</a> <a href="https://www.tfai.org.tw/zh/support/index" >贊助我們</a> <a href="https://www.tfai.org.tw/zh/about/publicInfo" >公開資訊</a> </div> </li> <li> <span class="has-sub">中心資源</span> <div> <a href="https://www.tfai.org.tw/zh/discover/index" >中心資源</a> <a href="https://www.tfai.org.tw/zh/lib/index" >圖書館新書</a> </div> </li> </ul> <div class="tool-menu"> <ul> <li class="lang">繁體中文&nbsp;&nbsp;&nbsp;&nbsp; <a href="/en/front/index" title="切換英文">English</a> </li> <li><a href="https://www.tfai.org.tw/zh/member/login" class="member" title="會員專區" >會員專區 </a></li> <li><a href="https://www.tfai.org.tw/zh/program/calendar" class="calander" title="節目日曆" >節目日曆 </a></li> <li><a href="https://www.tfai.org.tw/zh/shopping/showCart" class="cart" title="購物車" >購物車 <i>(<b>0</b>)</i></a></li> </ul> </div> </nav>
+
+
+			</div>
+		</div>
+	</div>
+
+	<main role="main">
+		<div class="container">
+
+
+<div class="section-swiper">
+	<div class="swiper-wrapper">
+		
+		
+			<section class="swiper-slide" id="festival">
+
+        <div class="title front"><h2></h2><h3></h3><div class="one-date"></div></div>
+
+				<div class="rotating">
+					<ul class="slides"></ul>
+				</div>
+				<div class="controls"><div><button class="prev"></button><button class="next"></button></div></div>
+			</section>
+		
+
+		
+		<section class="swiper-slide" id="ablut">
+			<div class="outer back">
+				<div class="wave1"></div>
+				<div class="wave2"></div>
+			</div>
+			<div class="outer front">
+				<div class="inner">
+
+					<div class="content">
+						<h2 class="ani-title"><div><b><i>關於國家<br>影視聽中心</i></b><b><i>ABOUT US</i></b></div></h2>
+
+						<div class="slogan">
+							<p>我們將每一部電影、電視、廣播作品蒐集、珍藏，<br>讓每一個年代的記憶、文化能被保存，及再次被看見。</p>
+						</div>
+					</div>
+					<figure><a href="/zh/page/camp.html#3f"><img src="/rsrc/img/home/about-3.jpg"></a></figure>
+					<figure><a href="/zh/page/camp.html#2f"><img src="/rsrc/img/home/about-2.jpg"></a></figure>
+					<figure><a href="/zh/page/about-center.html"><img src="/rsrc/img/home/about-1.jpg"></a></figure>
+				</div>
+			</div>
+		</section>
+
+		
+		
+			<section class="swiper-slide" id="movies">
+				<h2 class="ani-title"><div><b><i>看電影</i></b><b><i>WATCH FILMS</i></b></div></h2>
+
+				<div class="swiper">
+					<div class="swiper-wrapper">
+						
+							<a class="swiper-slide" href="/zh/program/movieDetail/2c9580827f62c38d01814bfbd8310336">
+								<figure>
+									<img class="swiper-lazy" data-src="https://www.tfai.org.tw/uploadFile/upload/film/2c9580827f62c38d01815bc6a112033f.jpg">
+									<div class="swiper-lazy-preloader"></div>
+									
+									
+									<figcaption>
+										<p>【台片狂】小丑與天鵝</p>
+										<div class="line"></div><time class="one-date" datetime="2022-07-16"></time>
+									</figcaption>
+								</figure>
+							</a>
+						
+							<a class="swiper-slide" href="/zh/program/movieDetail/2c9580827f62c38d0180c0f04361023c">
+								<figure>
+									<img class="swiper-lazy" data-src="https://www.tfai.org.tw/uploadFile/upload/film/2c9580827f62c38d0180cc72de4002ad.png">
+									<div class="swiper-lazy-preloader"></div>
+									
+									
+									<figcaption>
+										<p>托尼</p>
+										<div class="line"></div><time class="one-date" datetime="2022-07-17"></time>
+									</figcaption>
+								</figure>
+							</a>
+						
+							<a class="swiper-slide" href="/zh/program/movieDetail/2c9580827f62c38d01814bfbd3080330">
+								<figure>
+									<img class="swiper-lazy" data-src="https://www.tfai.org.tw/uploadFile/upload/film/2c9580827f62c38d01815c2f4bf30342.jpg">
+									<div class="swiper-lazy-preloader"></div>
+									
+									
+									<figcaption>
+										<p>【修復時光】綠光（數位修復版）</p>
+										<div class="line"></div><time class="one-date" datetime="2022-07-17"></time>
+									</figcaption>
+								</figure>
+							</a>
+						
+							<a class="swiper-slide" href="/zh/program/movieDetail/2c9580827f62c38d0180c0f03d0d0234">
+								<figure>
+									<img class="swiper-lazy" data-src="https://www.tfai.org.tw/uploadFile/upload/film/2c9580827f62c38d0180c2765a7b026c.jpg">
+									<div class="swiper-lazy-preloader"></div>
+									
+									
+									<figcaption>
+										<p>朗吉先生的罪行</p>
+										<div class="line"></div><time class="one-date" datetime="2022-07-17"></time>
+									</figcaption>
+								</figure>
+							</a>
+						
+							<a class="swiper-slide" href="/zh/program/movieDetail/2c9580828194f1ab0181b2fafc2c001b">
+								<figure>
+									<img class="swiper-lazy" data-src="https://www.tfai.org.tw/uploadFile/upload/film/2c9580828194f1ab0181b7979c150053.jpg">
+									<div class="swiper-lazy-preloader"></div>
+									
+									
+									<figcaption>
+										<p>【咱 江湖再見】聖石傳說</p>
+										<div class="line"></div><time class="one-date" datetime="2022-07-17"></time>
+									</figcaption>
+								</figure>
+							</a>
+						
+							<a class="swiper-slide" href="/zh/program/movieDetail/2c9580827f62c38d01814bfbd4fd0332">
+								<figure>
+									<img class="swiper-lazy" data-src="https://www.tfai.org.tw/uploadFile/upload/film/2c9580827f62c38d018160dac78c0357.jpeg">
+									<div class="swiper-lazy-preloader"></div>
+									
+									
+									<figcaption>
+										<p>【電影萬花筒】滾滾紅塵（數位修復版）</p>
+										<div class="line"></div><time class="one-date" datetime="2022-07-22"></time>
+									</figcaption>
+								</figure>
+							</a>
+						
+							<a class="swiper-slide" href="/zh/program/movieDetail/2c9580827f62c38d01814bfbd6b20334">
+								<figure>
+									<img class="swiper-lazy" data-src="https://www.tfai.org.tw/uploadFile/upload/film/2c9580827f62c38d018160df49e9035b.jpeg">
+									<div class="swiper-lazy-preloader"></div>
+									
+									
+									<figcaption>
+										<p>【電影萬花筒】無米樂</p>
+										<div class="line"></div><time class="one-date" datetime="2022-07-23"></time>
+									</figcaption>
+								</figure>
+							</a>
+						
+							<a class="swiper-slide" href="/zh/program/movieDetail/2c9580827f62c38d0180c0f032ca0228">
+								<figure>
+									<img class="swiper-lazy" data-src="https://www.tfai.org.tw/uploadFile/upload/film/2c9580827f62c38d0180c257c0f70253.png">
+									<div class="swiper-lazy-preloader"></div>
+									
+									
+									<figcaption>
+										<p>瘋狂博士杜伯＋幕間節目＋貝殼與牧師</p>
+										<div class="line"></div><time class="one-date" datetime="2022-07-23"></time>
+									</figcaption>
+								</figure>
+							</a>
+						
+							<a class="swiper-slide" href="/zh/program/movieDetail/2c9580827f62c38d01814bfbd7870335">
+								<figure>
+									<img class="swiper-lazy" data-src="https://www.tfai.org.tw/uploadFile/upload/film/2c9580827f62c38d01815bc10229033d.jpg">
+									<div class="swiper-lazy-preloader"></div>
+									
+									
+									<figcaption>
+										<p>【台片狂】異域</p>
+										<div class="line"></div><time class="one-date" datetime="2022-07-23"></time>
+									</figcaption>
+								</figure>
+							</a>
+						
+							<a class="swiper-slide" href="/zh/program/movieDetail/2c9580827f62c38d01814bfbd9bd0338">
+								<figure>
+									<img class="swiper-lazy" data-src="https://www.tfai.org.tw/uploadFile/upload/film/2c9580827f62c38d018185b0bb1a037c.jpg">
+									<div class="swiper-lazy-preloader"></div>
+									
+									
+									<figcaption>
+										<p>【影視聽名人堂】回顧《戀戀風塵》—陳明章與電影配樂</p>
+										<div class="line"></div><time class="one-date" datetime="2022-07-23"></time>
+									</figcaption>
+								</figure>
+							</a>
+						
+					</div>
+				</div>
+
+				<div class="swiper-arrows">
+					<div class="prev"><button>上一個</button></div>
+					<div class="next"><button>下一個</button></div>
+				</div>
+			</section>
+		
+
+		
+		
+			<section class="swiper-slide" id="exhibition">
+				<h2 class="ani-title"><div><b><i>跑活動</i></b><b><i>VISIT EXHIBITIONS</i></b></div></h2>
+
+				<div class="swiper">
+					<div class="swiper-wrapper">
+						
+							<a class="swiper-slide" href="/zh/program/detail/2c9580827e58477e017e6721d2080005">
+								<div class="card Exhibition">
+									<div class="img" ><div style="background-image:url(https://www.tfai.org.tw/uploadFile/upload/2c9580827e58477e017e675bc38c0009.jpg)"></div>&nbsp;</div>
+									<div class="caption">
+										<h3>「島嶼江湖：武俠在台灣」影視聽特展 </h3>
+										<p></p>
+										
+											<div class="one-date" data-date1="2022-02-04" data-date2="2022-04-24"></div>
+										
+									</div>
+								</div>
+							</a>
+						
+							<a class="swiper-slide" href="/zh/program/detail/2c9580827d7aa786017d7f46b431001d">
+								<div class="card Exhibition">
+									<div class="img" ><div style="background-image:url(https://www.tfai.org.tw/uploadFile/upload/2c9580827d7aa786017d7f3db7c0001c.jpg)"></div>&nbsp;</div>
+									<div class="caption">
+										<h3>藏鮮記憶特展</h3>
+										<p></p>
+										
+											<div class="one-date" data-date1="2021-12-17" data-date2="2022-02-27"></div>
+										
+									</div>
+								</div>
+							</a>
+						
+							<a class="swiper-slide" href="/zh/program/detail/2c9580827df82172017e41bb0e73009e">
+								<div class="card Workshop">
+									<div class="img" ><div style="background-image:url(https://www.tfai.org.tw/uploadFile/upload/2c9580827e76a1c6017e7abe929a0020.jpg)"></div>&nbsp;</div>
+									<div class="caption">
+										<h3>【島嶼江湖】延伸活動－本土藥草工作坊</h3>
+										<p></p>
+										
+											<div class="one-date" data-date1="2022-02-19" data-date2="2022-03-05"></div>
+										
+									</div>
+								</div>
+							</a>
+						
+							<a class="swiper-slide" href="/zh/program/detail/2c9580827e7d19ae017e9434af23006f">
+								<div class="card Activity">
+									<div class="img" ><div style="background-image:url(https://www.tfai.org.tw/uploadFile/upload/2c9580827e9b1976017f3940691e025a.jpg)"></div>&nbsp;</div>
+									<div class="caption">
+										<h3> 武俠劇場《島嶼江湖》</h3>
+										<p></p>
+										
+											<div class="one-date" data-date1="2022-02-26" data-date2="2022-03-27"></div>
+										
+									</div>
+								</div>
+							</a>
+						
+					</div>
+
+					<div class="swiper-nav">
+						<div class="swiper-button-prev"></div>
+						<div class="swiper-pagination"></div>
+						<div class="swiper-button-next"></div>
+					</div>
+				</div>
+			</section>
+		
+
+
+		
+		
+			<section class="swiper-slide" id="discover">
+				<div class="outer back">
+					<div class="wave1"></div>
+					<div class="wave2"></div>
+				</div>
+				<div class="outer front">
+					<div class="inner">
+						<h2 class="ani-title"><div><b><i>中心資源</i></b><b><i>DISCOVER</i></b></div></h2>
+						<div class="swiper">
+							<div class="swiper-wrapper">
+								
+									<a class="swiper-slide"
+									  href="http://www.funscreen.com.tw/index.asp" target="_blank"
+									  >
+										<div class="img">
+											<img src="https://www.tfai.org.tw/uploadFile/download/2c9580827d33248c017d55bd24e80038.jpg">
+											<h3>放映週報</h3>
+										</div>
+									</a>
+								
+									<a class="swiper-slide"
+									  href="https://edumovie.culture.tw/" target="_blank"
+									  >
+										<div class="img">
+											<img src="https://www.tfai.org.tw/uploadFile/download/2c9580827d33248c017d55bd40c20039.jpg">
+											<h3>認識電影</h3>
+										</div>
+									</a>
+								
+									<a class="swiper-slide"
+									  href="https://tcdrp.tfi.org.tw/index.asp" target="_blank"
+									  >
+										<div class="img">
+											<img src="https://www.tfai.org.tw/uploadFile/download/2c9580827d33248c017d55bd5e51003a.jpg">
+											<h3>台灣電影數位修復</h3>
+										</div>
+									</a>
+								
+									<a class="swiper-slide"
+									  href="https://www.tidf.org.tw/zh-hant" target="_blank"
+									  >
+										<div class="img">
+											<img src="https://www.tfai.org.tw/uploadFile/download/2c9580827d33248c017d55bd7b21003b.jpg">
+											<h3>台灣國際紀錄片影展</h3>
+										</div>
+									</a>
+								
+									<a class="swiper-slide"
+									  href="https://docs.tfi.org.tw/" target="_blank"
+									  >
+										<div class="img">
+											<img src="https://www.tfai.org.tw/uploadFile/download/2c9580827d33248c017d55bfae400045.jpg">
+											<h3>台灣紀錄片資料庫</h3>
+										</div>
+									</a>
+								
+									<a class="swiper-slide"
+									  href="https://toolkit.culture.tw/film_130.html" target="_blank"
+									  >
+										<div class="img">
+											<img src="https://www.tfai.org.tw/uploadFile/download/2c9580827d33248c017d55bdc9de003d.jpg">
+											<h3>台灣電影工具箱</h3>
+										</div>
+									</a>
+								
+									<a class="swiper-slide"
+									  href="http://search.tfai.org.tw/TFDBSearch/index.php" target="_blank"
+									  >
+										<div class="img">
+											<img src="https://www.tfai.org.tw/uploadFile/download/2c9580847cff50b6017cff79455a0008.JPG">
+											<h3>台灣電影數位典藏中心</h3>
+										</div>
+									</a>
+								
+									<a class="swiper-slide"
+									  href="https://collections-search.tfai.org.tw/" target="_blank"
+									  >
+										<div class="img">
+											<img src="https://www.tfai.org.tw/uploadFile/download/2c9580827df82172017e2ef338f10064.jpg">
+											<h3>藏品檢索系統</h3>
+										</div>
+									</a>
+								
+									<a class="swiper-slide"
+									  href="https://vod.tfai.org.tw/" target="_blank"
+									  >
+										<div class="img">
+											<img src="https://www.tfai.org.tw/uploadFile/download/2c9580827f62c38d017fe2e012df00dd.jpg">
+											<h3>影片隨選視訊系統</h3>
+										</div>
+									</a>
+								
+									<a class="swiper-slide"
+									  href="http://recapturingthepast.weebly.com/" target="_blank"
+									  >
+										<div class="img">
+											<img src="https://www.tfai.org.tw/uploadFile/download/2c9580827df82172017e2eddc843005a.png">
+											<h3>顯影．現聲：台灣影視聽文物展</h3>
+										</div>
+									</a>
+								
+									<a class="swiper-slide"
+									  href="https://tfi.openmuseum.tw/" target="_blank"
+									  >
+										<div class="img">
+											<img src="https://www.tfai.org.tw/uploadFile/download/2c9580847cff50b6017cff5634630003.PNG">
+											<h3>台灣影視聽數位博物館</h3>
+										</div>
+									</a>
+								
+							</div>
+						</div>
+
+    				<div class="swiper-arrows">
+    					<div class="prev"><button>上一個</button></div>
+    					<div class="next"><button>下一個</button></div>
+    				</div>
+						
+						
+					</div>
+				</div>
+			</section>
+		
+
+		<section class="swiper-slide footer"></section>
+	</div>
+
+	<div class="section-swiper-pagination swiper-pagination"></div>
+</div>
+
+</div>
+	</main>
+	<footer>
+		<div class="container">
+			<div class="logo m-b-20"></div>
+			<span class="tel">02-8522-8000</span>
+			<span class="location">242030新北市新莊區文藝路2號</span>
+			<nav>
+				<ul>
+					<li><a href="/zh/contact/index" title="聯絡我們">聯絡我們</a></li>
+
+					<li><a href="/zh/recruit/list" title="徵才資訊">徵才資訊</a></li>
+					<li><a href="/zh/tender/list" title="招標資訊">招標資訊</a></li>
+					<li><a href="/zh/lostAndFound/index" title="遺失物中心">遺失物中心</a></li>
+					<li><a href="/zh/page/sitemap.html" title="網站導覽">網站導覽</a></li>
+				</ul>
+			</nav>
+			<ul class="social">
+				<li><a href="tel:02-8522-8000" class="phone" title="聯絡電話">聯絡電話</a></li>
+				<li><a href="https://goo.gl/maps/kVDmPkR3j5GsVxPj7" class="map" title="地址" target="_blank">地址</a></li>
+				<li><a href="https://www.facebook.com/TaiwanFilmAndAudiovisualInstitute" class="fb" title="Facebook" target="_blank">Facebook</a></li>
+				<li><a href="https://www.youtube.com/user/TWCTFA" class="yt" title="Youtube" target="_blank">Youtube</a></li>
+			</ul>
+		</div>
+
+		<div class="copy">
+			<div class="container">
+				<p>Copyright &copy; 國家電影及視聽文化中心 Taiwan Film and Audiovisual Institute. All rights reserved.</p>
+				<ul class="terms">
+					
+
+				</ul>
+			</div>
+		</div>
+	</footer>
+	<a href="#" id="scroll-to-top" title="回到網頁最上方">回到網頁最上方</a>
+</div>
+
+
+<script src="/rsrc/js/main.js?dt=1656061984" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function () {
+        if (false) {
+            alert("");
+            
+        } else if (false) {
+            alert("");
+            
+        }
+    });
+</script>
+
+	
+	<div id="opening" class="hide">
+		<div class="video">
+			<video muted autoplay playsinline preload="none" poster="/rsrc/img/home/video.jpg">
+				<source type="video/mp4" src="https://www.tfai.org.tw/video/tfai.mp4">
+			</video>
+		</div>
+	</div>
+
+	<script>
+		var sliderData = [{"image":"https://www.tfai.org.tw/uploadFile/upload/promotion/2c95808281d7fb840181d801ec680002.jpg","url":"https://www.tfai.org.tw/zh/event/detail/2c95808281cd76af0181d7caf6bb0020","date1":"2022-07-30","date2":"2022-10-15","title1":"館外活動","title2":"天涯海角電影院用影像串起時代美好，國家影視聽中心邀請吳可熙擔任文化平權大使"},{"image":"https://www.tfai.org.tw/uploadFile/upload/promotion/2c95808281cd76af0181cdfba9de000b.jpg","url":"https://www.tfai.org.tw/zh/event/detail/2c95808281cd76af0181cdf21be70006","date1":"2022-08-05","date2":"2022-08-14","title1":"電影放映","title2":"影史大師庫柏力克經典再現，國家影視聽中心與華納兄弟合作獻映"},{"image":"https://www.tfai.org.tw/uploadFile/upload/promotion/2c9580828194f1ab0181c75fa2270066.jpg","url":"https://www.tfai.org.tw/event/detail/2c9580827f62c38d01818fd1508b0386","date1":"2022-07-01","date2":"2022-07-31","title1":"活動","title2":"7月盛夏，看電影放暑假"},{"image":"https://www.tfai.org.tw/uploadFile/upload/promotion/2c9580827f62c38d0180caef0d7f0296.png","url":"https://www.tfai.org.tw/program/seriesList/2c9580827f62c38d0180c1f4db940246","date1":"2022-06-03","date2":"2022-07-31","title1":"影展","title2":"「法國經典影展——自由是我們的！」影視聽特展    6/3端午連假開跑！"},{"image":"https://www.tfai.org.tw/uploadFile/upload/promotion/2c9580827f62c38d01806e00b4be01d8.jpg","url":"https://www.tfai.org.tw/event/detail/2c9580827f62c38d018069c7c3da01bc","date1":"2022-05-01","date2":"","title1":"活動","title2":"威秀影城iShow會員來本中心看電影享會員票價"},{"image":"https://www.tfai.org.tw/uploadFile/upload/promotion/2c9580827f62c38d01808798dedc01f9.jpg","url":"https://www.tfai.org.tw/event/detail/2c9580827f62c38d017fbff07acf00c7","date1":"2022-04-29","date2":"2022-12-09","title1":"活動","title2":"我們在電影院上課"}];
+	</script>
+	<script src="/rsrc/lib/swiper7/swiper-bundle.min.js" type="text/javascript"></script>
+	<script src="/rsrc/js/home2.js" type="text/javascript"></script>
+
+
+</body>
+</html>
