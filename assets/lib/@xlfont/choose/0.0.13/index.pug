@@ -1,0 +1,31 @@
+//- module
+mixin xfc
+  .xfc.toolbar.d-flex.flex-column.h-100
+    .xfc-head.d-flex.px-3.py-2.border-bottom
+      .mr-2.text-left
+        .text-muted(style="font-size:12px",t) Category
+        .dropdown
+          .btn.btn-sm.btn-outline-secondary.dropdown-toggle.text-capitalize(ld="cur-cat",
+          style="min-width:5em",data-toggle="dropdown")
+          .dropdown-menu.shadow-sm(style="max-height:50vh;overscroll-behavior:contain;overflow-y:scroll")
+            .dropdown-item.text-capitalize(ld-each="category")
+      .mr-2.text-left
+        .text-muted(style="font-size:12px",t) Subset
+        .dropdown.mr-2
+          .btn.btn-sm.btn-outline-secondary.dropdown-toggle.text-capitalize(ld="cur-subset",
+          style="min-width:5em",data-toggle="dropdown")
+          .dropdown-menu.shadow-sm(style="max-height:50vh;overscroll-behavior:contain;overflow-y:scroll")
+            .dropdown-item.text-capitalize(ld-each="subset")
+      .flex-grow-1.text-left
+        .text-muted(style="font-size:12px",t) Name
+        input.form-control.form-control-sm(ld="search", placeholder="Search...")
+      div
+        .text-muted(style="font-size:12px") &nbsp;
+        .btn.btn-sm.btn-text.mx-2(t) or
+        .btn.btn-sm.btn-outline-secondary.btn-upload(ld="upload") #[span(t) Upload] #[input(type="file")]
+      .ml-2
+        .text-muted(style="font-size:12px") &nbsp;
+        .btn.btn-sm.btn-outline-secondary(t,ld="cancel") Cancel
+    .xfc-content.flex-grow-1(style="overflow-y:hidden"): .h-100(ld="font-list",style="display:grid;grid-template-columns:repeat(auto-fill,250px);grid-gap:1em;justify-content:space-around;overscroll-behavior:contain;overflow-y:scroll")
+      .xfc-font(ld-each="font"): .inner(ld="name")
+    block
