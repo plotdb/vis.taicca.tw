@@ -24,7 +24,7 @@ subchart.map.prototype = import$(import$(Object.create(Object.prototype), subcha
     ref1$ = [this.timeline, this.aniloop], timeline = ref1$[0], aniloop = ref1$[1];
     p = this.inited
       ? Promise.resolve()
-      : (this.pdmap = pdmaptw.create({
+      : (this.pdmap = new pdmaptw({
         root: this.svg,
         type: 'county',
         baseurl: "assets/lib/pdmaptw/main",
@@ -103,7 +103,7 @@ subchart.map.prototype = import$(import$(Object.create(Object.prototype), subcha
   render: function(t){
     var time;
     this.dataset = this.host.dataset;
-    time = timeline.getTime();
+    time = this.timeline.getTime();
     if (!t || this.activeTime !== Math.floor(time)) {
       this.activeTime = Math.floor(time);
       return this.renderAlt(t);
