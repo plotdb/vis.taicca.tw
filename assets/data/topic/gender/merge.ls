@@ -1,7 +1,7 @@
 require! <[fs papaparse csv4xls]>
 
 result = []
-[2019 2020 2021].map (year) ->
+[2019 2020 2021 2022].map (year) ->
   ret = papaparse.parse fs.read-file-sync("#year.csv").toString!
   data = ret.data.filter -> it.filter(->it).length
   head = data.splice 0, 1 .0
