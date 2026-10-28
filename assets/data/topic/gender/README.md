@@ -5,3 +5,6 @@
 2023 年則由單位直接提供 excel 檔。
 
  - `2019-文創產業從業人員性別比例.csv` is legacy file for `banner/vis/?favor=5` only.
+
+2024 年資料取自《2024 臺灣文化創意產業發展年報》表❶-19（p.55–56，該年報起為當年資料），以 pdftotext -layout 抽出後轉為 `2024.csv`，
+校驗：各列加總 = 總計、男 + 女 = 合計、7 產業加總 = 總就業人數（誤差 ≤ 2，四捨五入）。更新後執行 `lsc merge.ls` 重建 `all.json` / `all.csv`。
