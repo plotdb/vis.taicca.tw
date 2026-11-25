@@ -1,0 +1,18 @@
+"我國遊戲業者生成式 AI 使用工具",""
+"",""
+"註：1. 有使用生成式 AI 之業者中，所使用 AI 工具種類者之分布情形（n ＝ 66）。
+2.AI 工具種類為複選題。
+單位：%
+資料來源：本調查整理。
+出處：《臺灣文化內容產業調查報告 2024 遊戲產業》p.39 圖28",""
+"N","R"
+"","%"
+"","2"
+"AI工具","占比"
+"ChatGPT／Gemini／Claude","96.97"
+"Midjourney／Stable Diffusion","40.91"
+"GitHub Copilot／Tabnine","28.79"
+"自行訓練之AI工具","15.15"
+"Unity AI平台（Unity Muse等）","15.15"
+"Unreal Engine AI模組（MetaHuman等）","12.12"
+"其他","7.58"
